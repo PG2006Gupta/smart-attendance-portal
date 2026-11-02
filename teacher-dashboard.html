@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Dashboard | SAP</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/layout-scale.css">
+    <link rel="stylesheet" href="css/app-enhancements.css">
+</head>
+<body>
+    <header class="dashboard-navbar">
+        <a href="teacher-dashboard.html" class="dashboard-logo">🎓 <span>SAP</span></a>
+        <div class="dashboard-right">
+            <span class="portal-label">Teacher Portal</span>
+            <div class="profile-dropdown">
+                <button type="button" class="teacher-profile profile-dropdown-toggle" onclick="toggleSAPProfileDropdown(event)" aria-expanded="false" aria-controls="teacherProfileMenu" aria-label="Teacher profile menu">
+                    <div class="teacher-avatar" id="teacherAvatar">T</div>
+                    <div class="profile-info"><strong id="teacherName">Teacher</strong><small>Faculty</small></div>
+                    <span class="profile-dropdown-chevron" aria-hidden="true">▾</span>
+                </button>
+                <div class="profile-dropdown-menu" id="teacherProfileMenu" hidden>
+                    <a href="teacher-profile.html"><span aria-hidden="true">👤</span>Profile</a>
+                    <a href="index.html" class="profile-dropdown-logout" onclick="teacherLogout(event)"><span aria-hidden="true">↪</span>Logout</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="teacher-dashboard-main">
+        <section class="teacher-welcome">
+            <div>
+                <span class="dashboard-badge">TEACHER DASHBOARD</span>
+                <h1 id="teacherWelcomeHeading">Welcome back 👋</h1>
+                <p>Manage your classes and attendance sessions from one place.</p>
+            </div>
+            <div class="teacher-date"><span>TODAY</span><strong id="teacherCurrentDate">Loading...</strong></div>
+        </section>
+
+        <section class="teacher-stats-grid">
+            <div class="teacher-stat-card">
+                <div class="teacher-stat-icon blue-stat">#</div>
+                <div><span>Assigned Classes</span><h2 id="teacherAssignedClasses">0</h2><small>Active offerings</small></div>
+            </div>
+            <div class="teacher-stat-card">
+                <div class="teacher-stat-icon green-stat">✓</div>
+                <div><span>Sessions Completed</span><h2 id="teacherCompletedSessions">0</h2><small>Today</small></div>
+            </div>
+            <div class="teacher-stat-card">
+                <div class="teacher-stat-icon purple-stat">◉</div>
+                <div><span>Enrolled Students</span><h2 id="teacherTotalStudents">0</h2><small>Across your offerings</small></div>
+            </div>
+            <div class="teacher-stat-card">
+                <div class="teacher-stat-icon orange-stat">!</div>
+                <div><span>Active Sessions</span><h2 id="teacherActiveSessions">0</h2><small>Currently running</small></div>
+            </div>
+        </section>
+
+        <section class="teacher-content-grid">
+            <div class="teacher-card classes-card">
+                <div class="teacher-card-heading">
+                    <div><h2>Your Classes</h2><p>Select a subject to manage attendance.</p></div>
+                    <span class="today-label">ASSIGNED</span>
+                </div>
+                <div class="class-list" id="teacherClassList"><p>Loading classes...</p></div>
+            </div>
+
+            <div class="teacher-card session-card">
+                <div class="teacher-card-heading"><div><h2>Start Attendance</h2><p>Configure your ten-minute attendance session.</p></div></div>
+                <div class="selected-class-box">
+                    <span>SELECTED SUBJECT</span>
+                    <strong id="selectedSubject">No subject selected</strong>
+                    <small id="selectedSection">Select a class from your assigned classes.</small>
+                </div>
+
+                <div class="teacher-input-group">
+                    <label for="classroomSelect">Classroom</label>
+                    <select id="classroomSelect" onchange="updateRoomDetails()" disabled>
+                        <option value="">Loading classrooms...</option>
+                    </select>
+                </div>
+
+                <div class="room-info-box">
+                    <div class="room-info-item"><span>Room Radius</span><strong id="roomRadius">—</strong></div>
+                    <div class="room-info-item"><span>Students Expected</span><strong id="selectedExpectedStudents">0</strong></div>
+                    <div class="room-info-item"><span>Location Setup</span><strong id="roomLocationStatus">—</strong></div>
+                </div>
+
+                <button type="button" class="start-session-button" onclick="startAttendanceSession()">Start Attendance Session →</button>
+                <button type="button" class="teacher-records-button" id="resumeActiveSessionButton" hidden>Resume Active Session →</button>
+                <button type="button" class="teacher-records-button" onclick="window.location.href='teacher-attendance-records.html'">Attendance Records →</button>
+
+                <div class="session-security-note">
+                    <span>🛡️</span>
+                    <p>Student attendance requires a registered device signature and server-side classroom verification.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="teacher-session-banner">
+            <div class="session-banner-icon">◉</div>
+            <div><h2>Classroom-based attendance verification</h2><p>Each classroom uses its own configured radius and verified coordinates.</p></div>
+        </section>
+    </main>
+
+    <footer class="dashboard-footer">
+        <p>© 2026 Smart Attendance Portal (SAP)</p>
+    </footer>
+
+    <script src="js/script.js"></script>
+    <script src="js/teacher-portal.js"></script>
+    <script>initializeTeacherDashboard();</script>
+</body>
+</html>

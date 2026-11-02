@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Session Details | SAP</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/layout-scale.css">
+    <link rel="stylesheet" href="css/app-enhancements.css">
+</head>
+<body>
+    <nav class="history-navbar">
+        <a href="teacher-dashboard.html" class="history-nav-brand"><span class="history-nav-logo">SAP</span></a>
+        <div class="history-nav-title">Teacher Portal</div>
+        <div class="profile-dropdown history-nav-profile">
+            <button type="button" class="history-profile-toggle profile-dropdown-toggle" onclick="toggleSAPProfileDropdown(event)" aria-expanded="false" aria-controls="teacherProfileMenu" aria-label="Teacher profile menu">
+                <div class="history-profile-avatar sap-initial-avatar" id="teacherProfileAvatar">T</div>
+                <div class="history-profile-info"><strong id="teacherName">Teacher</strong><span>Faculty</span></div>
+                <span class="profile-dropdown-chevron" aria-hidden="true">▾</span>
+            </button>
+            <div class="profile-dropdown-menu" id="teacherProfileMenu" hidden>
+                <a href="teacher-profile.html"><span aria-hidden="true">👤</span>Profile</a>
+                <a href="index.html" class="profile-dropdown-logout" onclick="teacherLogout(event)"><span aria-hidden="true">↪</span>Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="teacher-session-details-main">
+        <section class="teacher-session-details-header">
+            <span class="teacher-records-badge">SESSION DETAILS</span>
+            <h1 id="detailsSubject">Loading session...</h1>
+            <p id="detailsMeta">Loading session information</p>
+        </section>
+
+        <section class="teacher-session-summary">
+            <div class="teacher-session-summary-card"><span>Present</span><strong id="detailsPresent">0</strong></div>
+            <div class="teacher-session-summary-card"><span>Absent</span><strong id="detailsAbsent">0</strong></div>
+            <div class="teacher-session-summary-card"><span>Total Students</span><strong id="detailsTotal">0</strong></div>
+            <div class="teacher-session-summary-card"><span>Session Status</span><strong class="session-closed-text" id="detailsStatus">—</strong></div>
+        </section>
+
+        <section class="teacher-session-students-panel">
+            <div class="teacher-records-panel-header"><div><h2>Student Attendance</h2><p>Attendance records for this session</p></div></div>
+            <div class="teacher-session-students-wrapper">
+                <table class="teacher-session-students-table">
+                    <thead><tr><th>Student</th><th>Student ID</th><th>Attendance</th><th>Verification</th><th>Time</th></tr></thead>
+                    <tbody id="detailsStudentRows"><tr><td colspan="5">Loading student records...</td></tr></tbody>
+                </table>
+            </div>
+        </section>
+
+        <div class="teacher-session-details-back"><a href="teacher-attendance-records.html">← Back to Attendance Records</a></div>
+    </main>
+
+    <script src="js/script.js"></script>
+    <script src="js/teacher-portal.js"></script>
+    <script>initializeTeacherSessionDetails();</script>
+</body>
+</html>

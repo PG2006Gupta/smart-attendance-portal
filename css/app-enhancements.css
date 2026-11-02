@@ -1,0 +1,220 @@
+/* Small functional additions; loaded after the existing design files. */
+
+[hidden] {
+    display: none !important;
+}
+
+.sap-initial-avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #eef4ff;
+    color: #2563eb;
+    font-weight: 800;
+}
+
+.sap-large-initial {
+    font-size: 2rem;
+}
+
+.sap-action-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.sap-action-stack > button {
+    width: 100%;
+}
+
+.sap-empty-state {
+    padding: 24px 12px;
+    color: #64748b;
+    text-align: center;
+}
+
+.sap-warning-text {
+    color: #b45309;
+    font-weight: 600;
+}
+
+.sap-warning-text:empty {
+    display: none;
+}
+
+.sap-device-list {
+    display: grid;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+.sap-device-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    padding: 16px;
+    border: 1px solid #dce6f5;
+    border-radius: 12px;
+    background: #f8faff;
+}
+
+.sap-device-item > div {
+    display: grid;
+    gap: 5px;
+}
+
+.sap-device-item small {
+    color: #64748b;
+}
+
+.sap-danger-link,
+.sap-inline-button {
+    border: 0;
+    cursor: pointer;
+    font: inherit;
+}
+
+.sap-danger-link {
+    padding: 8px 12px;
+    border-radius: 8px;
+    background: #fff1f2;
+    color: #be123c;
+    font-weight: 700;
+}
+
+.sap-danger-link:hover {
+    background: #ffe4e6;
+}
+
+.sap-inline-button {
+    text-decoration: none;
+}
+
+/* Shared authenticated-page profile dropdown */
+.profile-dropdown {
+    position: relative;
+}
+
+.profile-dropdown-toggle,
+.history-profile-toggle {
+    border: 0;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+    font: inherit;
+    text-align: left;
+}
+
+.profile-dropdown-toggle {
+    padding: 0;
+}
+
+.history-profile-toggle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0;
+}
+
+.profile-dropdown-toggle:focus-visible,
+.history-profile-toggle:focus-visible {
+    outline: 3px solid rgba(37, 99, 235, 0.28);
+    outline-offset: 5px;
+    border-radius: 10px;
+}
+
+.profile-dropdown-chevron {
+    flex-shrink: 0;
+    margin-left: 3px;
+    color: #64748b;
+    font-size: 16px;
+    line-height: 1;
+    transition: transform 0.2s ease;
+}
+
+.profile-dropdown-toggle[aria-expanded="true"] .profile-dropdown-chevron {
+    transform: rotate(180deg);
+}
+
+.profile-dropdown-menu {
+    position: absolute;
+    top: calc(100% + 12px);
+    right: 0;
+    z-index: 1000;
+    min-width: 190px;
+    padding: 8px;
+    border: 1px solid #dce6f5;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.98);
+    box-shadow: 0 18px 45px rgba(30, 64, 175, 0.17);
+}
+
+.profile-dropdown-menu a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 43px;
+    padding: 10px 12px;
+    border-radius: 9px;
+    color: #25344d;
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.profile-dropdown-menu a:hover,
+.profile-dropdown-menu a:focus-visible {
+    background: #eff6ff;
+    color: #1d4ed8;
+    outline: none;
+}
+
+.profile-dropdown-menu .profile-dropdown-logout {
+    color: #be123c;
+}
+
+.profile-dropdown-menu .profile-dropdown-logout:hover,
+.profile-dropdown-menu .profile-dropdown-logout:focus-visible {
+    background: #fff1f2;
+    color: #9f1239;
+}
+
+.attendance-status.absent,
+.history-status.absent {
+    color: #b91c1c;
+    background: #fee2e2;
+}
+
+.attendance-status.pending,
+.history-status.pending {
+    color: #a16207;
+    background: #fef9c3;
+}
+
+.teacher-record-status.active {
+    color: #166534;
+    background: #dcfce7;
+}
+
+.teacher-record-status.expired,
+.teacher-record-status.cancelled {
+    color: #9f1239;
+    background: #ffe4e6;
+}
+
+button:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.attendance-circle {
+    border-radius: 50%;
+}
+
+@media (max-width: 600px) {
+    .sap-device-item {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}

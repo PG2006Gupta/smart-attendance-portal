@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance History | SAP</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/layout-scale.css">
+    <link rel="stylesheet" href="css/app-enhancements.css">
+</head>
+<body>
+    <nav class="history-navbar">
+        <a href="student-dashboard.html" class="history-nav-brand"><span class="history-nav-logo">SAP</span></a>
+        <div class="history-nav-title"><span>Student Portal</span></div>
+        <div class="profile-dropdown history-nav-profile">
+            <button type="button" class="history-profile-toggle profile-dropdown-toggle" onclick="toggleSAPProfileDropdown(event)" aria-expanded="false" aria-controls="studentProfileMenu" aria-label="Student profile menu">
+                <div class="history-profile-avatar sap-initial-avatar" id="studentAvatar">S</div>
+                <div class="history-profile-info">
+                    <strong id="studentName">Student</strong>
+                    <span>Student</span>
+                </div>
+                <span class="profile-dropdown-chevron" aria-hidden="true">▾</span>
+            </button>
+            <div class="profile-dropdown-menu" id="studentProfileMenu" hidden>
+                <a href="student-profile.html"><span aria-hidden="true">👤</span>Profile</a>
+                <a href="index.html" class="profile-dropdown-logout" onclick="studentLogout(event)"><span aria-hidden="true">↪</span>Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="attendance-history-main">
+        <section class="attendance-history-header">
+            <span class="attendance-history-badge">STUDENT RECORD</span>
+            <h1>Attendance History</h1>
+            <p>View your attendance records and attendance percentage.</p>
+        </section>
+
+        <section class="attendance-history-summary">
+            <div class="history-summary-card">
+                <span>Overall Attendance</span>
+                <strong id="historyOverallPercentage">0%</strong>
+                <small>Current semester</small>
+            </div>
+            <div class="history-summary-card">
+                <span>Classes Attended</span>
+                <strong id="historyPresentCount">0</strong>
+                <small id="historyClassCount">Of 0 completed sessions</small>
+            </div>
+            <div class="history-summary-card">
+                <span>Classes Missed</span>
+                <strong id="historyAbsentCount">0</strong>
+                <small>Current semester</small>
+            </div>
+        </section>
+
+        <section class="attendance-history-panel">
+            <div class="attendance-history-panel-header">
+                <div>
+                    <h2>Attendance Records</h2>
+                    <p>Your recent attendance activity</p>
+                </div>
+            </div>
+            <div class="attendance-history-table-wrapper">
+                <table class="attendance-history-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Subject</th>
+                            <th>Section</th>
+                            <th>Time</th>
+                            <th>Classroom</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="studentHistoryRows">
+                        <tr><td colspan="6">Loading attendance records...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <div class="attendance-history-back"><a href="student-dashboard.html">← Back to Dashboard</a></div>
+    </main>
+
+    <script src="js/script.js"></script>
+    <script src="js/student-portal.js"></script>
+    <script>initializeStudentHistoryPage();</script>
+</body>
+</html>

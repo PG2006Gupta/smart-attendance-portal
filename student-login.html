@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Student Login | SAP</title>
+
+    <link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/layout-scale.css">
+
+</head>
+
+
+<body>
+
+    <!-- ================= NAVBAR ================= -->
+
+    <header class="navbar">
+
+        <a href="index.html" class="logo logo-link">
+            🎓 <span>SAP</span>
+        </a>
+
+        <div class="portal-name">
+            Student Portal
+        </div>
+
+    </header>
+
+
+
+    <!-- ================= LOGIN SECTION ================= -->
+
+    <main class="login-page">
+
+        <div class="login-container">
+
+
+            <!-- LOGIN HEADER -->
+
+            <div class="login-header">
+
+                <div class="login-main-icon">
+                    👨‍🎓
+                </div>
+
+                <div class="badge">
+                    STUDENT PORTAL
+                </div>
+
+                <h1>
+                    Welcome Back
+                </h1>
+
+                <p>
+                    Sign in to access your attendance dashboard.
+                </p>
+
+            </div>
+
+
+
+            <!-- LOGIN CARD -->
+
+            <div class="student-login-card">
+
+
+                <!-- STUDENT ID -->
+
+                <div class="input-group">
+
+                    <label for="studentId">
+                        Student ID
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <span class="input-icon">
+                            ID
+                        </span>
+
+                        <input
+                            type="text"
+                            id="studentId"
+                            placeholder="Enter your Student ID"
+                            autocomplete="username"
+                        >
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- PASSWORD -->
+
+                <div class="input-group">
+
+                    <div class="label-row">
+
+                        <label for="password">
+                            Password
+                        </label>
+
+                       <a
+                            href="#"
+                            class="forgot-password"
+                            onclick="forgotStudentPassword(event)">
+
+                            Forgot Password?
+
+                        </a>
+
+                    </div>
+
+
+                    <div class="input-wrapper">
+
+                        <span class="input-icon">
+                            🔒
+                        </span>
+
+                        <input
+                            type="password"
+                            id="password"
+                            placeholder="Enter your password"
+                            autocomplete="current-password"
+                        >
+
+                        <button
+                            type="button"
+                            class="password-toggle"
+                            onclick="togglePassword()"
+                            aria-label="Show password">
+
+                            👁
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- REMEMBER ME -->
+
+                <div class="remember-row">
+
+                    <label class="remember-label">
+
+                        <input
+                            type="checkbox"
+                            id="rememberMe"
+                        >
+
+                        <span>
+                            Remember me
+                        </span>
+
+                    </label>
+
+                </div>
+
+
+
+                <!-- LOGIN BUTTON -->
+
+                <button
+                    type="button"
+                    class="main-login-button"
+                    onclick="studentLogin()">
+
+                    Login to Student Portal →
+
+                </button>
+
+
+
+                <!-- DIVIDER -->
+
+                <div class="login-divider">
+
+                    <span>OR</span>
+
+                </div>
+
+
+
+                <!-- BIOMETRIC BUTTON -->
+
+                <button
+                    type="button"
+                    class="biometric-button"
+                    onclick="biometricLogin()">
+
+                    <span class="biometric-icon">
+                        🔐
+                    </span>
+
+                    <span>
+                        Login with Biometric / Passkey
+                    </span>
+
+                </button>
+
+
+
+                <!-- SECURITY NOTE -->
+
+                <div class="security-note">
+
+                    <span>🛡️</span>
+
+                    <p>
+                        Your account is protected with
+                        secure authentication.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- BACK LINK -->
+
+            <a href="index.html" class="back-home">
+                ← Back to Home
+            </a>
+
+
+        </div>
+
+    </main>
+
+
+
+    <!-- ================= FOOTER ================= -->
+
+    <footer>
+
+        <p>
+            © 2026 Smart Attendance Portal (SAP)
+        </p>
+
+        <p>
+            Secure • Reliable • Smart
+        </p>
+
+    </footer>
+
+
+
+    <script src="js/script.js"></script>
+    <script src="js/passkeys.js"></script>
+
+</body>
+
+</html>

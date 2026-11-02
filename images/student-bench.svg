@@ -1,0 +1,87 @@
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+  <g fill="none" stroke="#1674d1" stroke-width="5"
+     stroke-linecap="round" stroke-linejoin="round">
+
+    <!-- Decorative background -->
+    <path d="M390 500 Q460 350 590 390 T780 300"
+          stroke="#5da9ff" stroke-width="30" opacity=".12"/>
+    <circle cx="610" cy="210" r="130"
+            fill="#75baff" stroke="none" opacity=".12"/>
+
+    <!-- Bench -->
+    <path d="M390 365 H755 M390 395 H755
+             M420 365 L400 475 M720 365 L745 475"
+          stroke-width="10" opacity=".65"/>
+    <path d="M400 475 H745" stroke-width="8"/>
+
+    <!-- Student's head and hair -->
+    <path d="M485 125
+             Q455 95 480 65
+             Q515 35 550 65
+             Q580 95 558 140
+             Q535 165 505 145 Z"
+          fill="#8dc6ff" fill-opacity=".45"/>
+    <path d="M480 105 Q465 65 505 48
+             Q540 35 565 70 L555 105
+             Q540 85 525 90 L505 115 Z"
+          fill="#1674d1"/>
+    <path d="M500 125 Q515 145 535 125"/>
+    <path d="M510 108 L520 108"/>
+
+    <!-- Body and hoodie -->
+    <path d="M490 155
+             Q465 165 450 210
+             L425 275
+             Q450 305 505 300
+             L555 225
+             Q565 185 535 160 Z"
+          fill="#a8d4ff" fill-opacity=".55"/>
+    <path d="M490 155 Q505 185 530 165
+             M480 180 L470 235
+             M535 185 L545 225"/>
+
+    <!-- Arms holding a book -->
+    <path d="M470 205 L420 255 L475 275
+             M535 205 L480 250 L460 270"
+          stroke-width="18"/>
+    <path d="M470 205 L420 255 L475 275
+             M535 205 L480 250 L460 270"
+          stroke-width="5"/>
+
+    <!-- Open book -->
+    <path d="M390 235 L430 220 L470 245
+             L510 220 L545 238 L505 275
+             L470 260 L435 278 Z"
+          fill="#e6f4ff"/>
+    <path d="M470 245 L470 260
+             M430 230 L460 248
+             M500 235 L530 240"/>
+
+    <!-- Legs -->
+    <path d="M440 295 L405 360 L455 380
+             M500 300 L535 350 L500 390"
+          stroke-width="25" stroke="#1674d1"/>
+    <path d="M405 360 L455 380
+             M535 350 L500 390" stroke-width="5"/>
+
+    <!-- Shoes -->
+    <path d="M405 360 Q375 350 365 375
+             L420 390 L455 380
+             M500 390 Q475 385 470 405
+             L520 415 L540 400"
+          fill="#e6f4ff"/>
+
+    <!-- Ground and plants -->
+    <path d="M285 485 H785" stroke="#5da9ff" opacity=".5"/>
+    <path d="M330 485 Q300 450 325 425
+             Q350 445 340 475
+             M340 475 Q355 435 380 440
+             Q375 465 340 485
+             M700 485 Q675 450 695 425
+             Q720 450 710 480
+             M710 480 Q730 440 755 445
+             Q750 470 710 485"
+          stroke-width="4" opacity=".7"/>
+  </g>
+</svg>

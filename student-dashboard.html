@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard | SAP</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/layout-scale.css">
+    <link rel="stylesheet" href="css/app-enhancements.css">
+</head>
+<body>
+    <header class="dashboard-navbar">
+        <a href="student-dashboard.html" class="dashboard-logo">🎓 <span>SAP</span></a>
+        <div class="dashboard-right">
+            <span class="portal-label">Student Portal</span>
+            <div class="profile-dropdown">
+                <button type="button" class="student-profile profile-dropdown-toggle" onclick="toggleSAPProfileDropdown(event)" aria-expanded="false" aria-controls="studentProfileMenu" aria-label="Student profile menu">
+                    <div class="profile-avatar sap-initial-avatar" id="studentAvatar">S</div>
+                    <div class="profile-info">
+                        <strong id="studentName">Student</strong>
+                        <small>Student</small>
+                    </div>
+                    <span class="profile-dropdown-chevron" aria-hidden="true">▾</span>
+                </button>
+                <div class="profile-dropdown-menu" id="studentProfileMenu" hidden>
+                    <a href="student-profile.html"><span aria-hidden="true">👤</span>Profile</a>
+                    <a href="index.html" class="profile-dropdown-logout" onclick="studentLogout(event)"><span aria-hidden="true">↪</span>Logout</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="dashboard-main">
+        <section class="dashboard-welcome">
+            <div>
+                <span class="dashboard-badge">STUDENT DASHBOARD</span>
+                <h1 id="studentWelcomeHeading">Welcome back 👋</h1>
+                <p>Here's your attendance overview for the current semester.</p>
+            </div>
+            <div class="current-date">
+                <span>TODAY</span>
+                <strong id="studentCurrentDate">Loading...</strong>
+            </div>
+        </section>
+
+        <section class="stats-grid">
+            <div class="stat-card attendance-stat">
+                <div class="stat-icon">%</div>
+                <div>
+                    <span class="stat-label">Overall Attendance</span>
+                    <h2 id="studentOverallPercentage">0%</h2>
+                    <small class="positive-text" id="studentAttendanceNote">No completed sessions yet</small>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon green-icon">✓</div>
+                <div>
+                    <span class="stat-label">Present</span>
+                    <h2 id="studentPresentCount">0</h2>
+                    <small>Classes attended</small>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon red-icon">×</div>
+                <div>
+                    <span class="stat-label">Absent</span>
+                    <h2 id="studentAbsentCount">0</h2>
+                    <small>Classes missed</small>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon purple-icon">#</div>
+                <div>
+                    <span class="stat-label">Total Classes</span>
+                    <h2 id="studentTotalClasses">0</h2>
+                    <small>Completed sessions</small>
+                </div>
+            </div>
+        </section>
+
+        <section class="dashboard-grid">
+            <div class="dashboard-card">
+                <div class="card-heading">
+                    <div>
+                        <h2>Today's Attendance</h2>
+                        <p>Attendance sessions actually started today</p>
+                    </div>
+                    <span class="live-badge">TODAY</span>
+                </div>
+                <div class="attendance-list" id="studentTodayAttendanceList">
+                    <p class="sap-empty-state">Loading today's sessions...</p>
+                </div>
+            </div>
+
+            <div class="dashboard-card overview-card">
+                <div class="card-heading">
+                    <div>
+                        <h2>Attendance Overview</h2>
+                        <p>Current semester</p>
+                    </div>
+                </div>
+                <div class="attendance-circle" id="studentAttendanceCircle">
+                    <div class="circle-inner">
+                        <strong id="studentCirclePercentage">0%</strong>
+                        <span>Attendance</span>
+                    </div>
+                </div>
+                <div class="overview-info">
+                    <div>
+                        <span class="dot present-dot"></span>
+                        Present <strong id="studentOverviewPresent">0</strong>
+                    </div>
+                    <div>
+                        <span class="dot absent-dot"></span>
+                        Absent <strong id="studentOverviewAbsent">0</strong>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="action-section">
+            <div class="action-content">
+                <div class="action-icon">📍</div>
+                <div>
+                    <h2>Attendance Session</h2>
+                    <p id="studentActiveSessionMessage">Checking for an active session...</p>
+                </div>
+            </div>
+            <a href="student-attendance.html" class="attendance-button" id="studentMarkAttendanceButton">Mark Attendance →</a>
+            <a href="student-attendance-history.html" class="attendance-history-button">View Attendance History →</a>
+        </section>
+    </main>
+
+    <footer class="dashboard-footer">
+        <p>© 2026 Smart Attendance Portal (SAP)</p>
+    </footer>
+
+    <script src="js/script.js"></script>
+    <script src="js/student-portal.js"></script>
+    <script>initializeStudentDashboard();</script>
+</body>
+</html>

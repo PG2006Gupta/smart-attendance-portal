@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mark Attendance | SAP</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/layout-scale.css">
+    <link rel="stylesheet" href="css/app-enhancements.css">
+</head>
+<body>
+    <header class="dashboard-navbar">
+        <a href="student-dashboard.html" class="dashboard-logo">🎓 <span>SAP</span></a>
+        <div class="dashboard-right">
+            <span class="portal-label">Student Portal</span>
+            <div class="profile-dropdown">
+                <button type="button" class="student-profile profile-dropdown-toggle" onclick="toggleSAPProfileDropdown(event)" aria-expanded="false" aria-controls="studentProfileMenu" aria-label="Student profile menu">
+                    <div class="profile-avatar sap-initial-avatar" id="studentAvatar">S</div>
+                    <div class="profile-info">
+                        <strong id="studentName">Student</strong>
+                        <small>Student</small>
+                    </div>
+                    <span class="profile-dropdown-chevron" aria-hidden="true">▾</span>
+                </button>
+                <div class="profile-dropdown-menu" id="studentProfileMenu" hidden>
+                    <a href="student-profile.html"><span aria-hidden="true">👤</span>Profile</a>
+                    <a href="index.html" class="profile-dropdown-logout" onclick="studentLogout(event)"><span aria-hidden="true">↪</span>Logout</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="student-attendance-main">
+        <section class="student-attendance-header">
+            <span class="dashboard-badge">ATTENDANCE VERIFICATION</span>
+            <h1>Mark Your Attendance</h1>
+            <p>Complete the verification steps below to record your attendance.</p>
+        </section>
+
+        <section class="active-session-card">
+            <div class="active-session-heading">
+                <div>
+                    <span>ACTIVE CLASS SESSION</span>
+                    <h2 id="studentSessionSubject">Loading session...</h2>
+                    <p id="studentSessionSection">Checking your enrolled classes</p>
+                </div>
+                <div class="student-session-status">
+                    <span class="live-dot"></span>
+                    <span id="studentSessionStatus">CHECKING</span>
+                </div>
+            </div>
+            <div class="student-session-details">
+                <div>
+                    <span>Classroom</span>
+                    <strong id="studentSessionClassroom">—</strong>
+                </div>
+                <div>
+                    <span>Attendance Range</span>
+                    <strong id="studentSessionRadius">—</strong>
+                </div>
+                <div>
+                    <span>Teacher</span>
+                    <strong id="studentSessionTeacher">—</strong>
+                </div>
+            </div>
+        </section>
+
+        <section class="student-verification-card">
+            <div class="verification-header">
+                <div>
+                    <h2>Attendance Verification</h2>
+                    <p>Your registered device and location must pass all checks.</p>
+                </div>
+            </div>
+
+            <div class="verification-step">
+                <div class="verification-step-icon">1</div>
+                <div class="verification-step-content">
+                    <h3>Account Authentication</h3>
+                    <p>Your protected student session is checked by the server.</p>
+                </div>
+                <span class="verification-step-status ready">✓ Verified</span>
+            </div>
+
+            <div class="verification-step">
+                <div class="verification-step-icon">2</div>
+                <div class="verification-step-content">
+                    <h3>Device Verification</h3>
+                    <p>This browser signs a single-use challenge with its registered private key.</p>
+                </div>
+                <span class="verification-step-status waiting" id="deviceStatus">Waiting</span>
+            </div>
+
+            <div class="verification-step">
+                <div class="verification-step-icon">3</div>
+                <div class="verification-step-content">
+                    <h3>Location Verification</h3>
+                    <p>The server checks GPS accuracy and Haversine distance against the classroom.</p>
+                </div>
+                <span class="verification-step-status waiting" id="locationStatus">Waiting</span>
+            </div>
+
+            <div class="verification-action sap-action-stack">
+                <button
+                    type="button"
+                    class="teacher-records-button"
+                    id="studentRegisterDeviceButton"
+                    onclick="registerStudentDeviceForAttendance()"
+                    hidden
+                >Register This Device</button>
+
+                <button
+                    type="button"
+                    class="verify-attendance-button"
+                    id="studentVerifyAttendanceButton"
+                    onclick="beginRealStudentAttendanceVerification()"
+                >Verify &amp; Mark Attendance →</button>
+
+                <div id="attendanceResult" class="attendance-result" style="display: none;">
+                    <div class="attendance-result-icon">✓</div>
+                    <h3>Attendance Marked Successfully</h3>
+                    <p id="attendanceResultText">Your attendance has been recorded for this session.</p>
+                </div>
+
+                <p class="verification-action-note">
+                    By continuing, your browser will request permission to access your location.
+                </p>
+                <p class="verification-action-note sap-warning-text" id="studentLocationConfigurationNote"></p>
+            </div>
+        </section>
+
+        <section class="student-attendance-security">
+            <div class="student-security-icon">🛡️</div>
+            <div>
+                <h3>Secure Attendance</h3>
+                <p>Attendance is recorded only after authentication, a valid device signature, and server-side classroom verification.</p>
+            </div>
+        </section>
+
+        <a href="student-dashboard.html" class="student-attendance-back">← Back to Dashboard</a>
+    </main>
+
+    <footer class="dashboard-footer">
+        <p>© 2026 Smart Attendance Portal (SAP)</p>
+    </footer>
+
+    <script src="js/script.js"></script>
+    <script src="js/device-security.js"></script>
+    <script src="js/student-portal.js"></script>
+    <script>initializeStudentAttendancePage();</script>
+</body>
+</html>

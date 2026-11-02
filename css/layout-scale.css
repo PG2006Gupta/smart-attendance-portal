@@ -1,0 +1,742 @@
+/* =====================================================
+   SAP GLOBAL LAYOUT + TYPOGRAPHY ENLARGEMENT
+   Load this file AFTER css/style.css on every HTML page.
+   ===================================================== */
+
+:root {
+    --sap-wide-content: 1440px;
+    --sap-medium-content: 1180px;
+    --sap-card-radius: 22px;
+}
+
+/* ================= GLOBAL READABILITY ================= */
+
+body {
+    font-size: 17px;
+    line-height: 1.55;
+}
+
+.navbar {
+    height: 84px;
+    min-height: 84px;
+}
+
+.dashboard-navbar,
+.history-navbar {
+    min-height: 82px;
+}
+
+.logo {
+    font-size: 29px;
+}
+
+.dashboard-logo {
+    font-size: 28px;
+}
+
+.portal-name,
+.portal-label {
+    font-size: 15px;
+}
+
+.profile-info strong {
+    font-size: 15px;
+}
+
+.profile-info small {
+    font-size: 13px;
+}
+
+footer,
+.dashboard-footer {
+    min-height: 64px;
+    font-size: 14px;
+}
+
+.badge,
+.dashboard-badge {
+    padding: 9px 16px;
+    font-size: 12px;
+}
+
+/* ================= HOME PAGE ================= */
+
+.hero-content {
+    max-width: 1220px;
+}
+
+.hero h1 {
+    font-size: clamp(46px, 5.2vw, 70px);
+}
+
+.hero-content > p {
+    max-width: 790px;
+    font-size: 19px;
+}
+
+.login-options {
+    gap: 32px;
+}
+
+.login-card {
+    width: 390px;
+    min-height: 360px;
+    padding: 42px 38px;
+}
+
+.login-options .login-card {
+    width: auto;
+    max-width: 390px;
+    flex: 1 1 300px;
+}
+
+.login-icon {
+    width: 88px;
+    height: 88px;
+    font-size: 46px;
+}
+
+.login-card h2 {
+    font-size: 26px;
+}
+
+.login-card p {
+    max-width: 315px;
+    font-size: 16px;
+}
+
+.login-card button {
+    min-height: 50px;
+    font-size: 16px;
+}
+
+/* ================= LOGIN PAGES ================= */
+
+.login-container {
+    max-width: 570px;
+}
+
+.login-header h1 {
+    font-size: 42px;
+}
+
+.login-header p {
+    font-size: 17px;
+}
+
+.login-main-icon {
+    width: 86px;
+    height: 86px;
+    font-size: 46px;
+}
+
+.student-login-card {
+    padding: 40px;
+}
+
+.input-group label,
+.teacher-input-group label {
+    font-size: 15px;
+}
+
+.forgot-password {
+    font-size: 14px;
+}
+
+.input-wrapper input {
+    height: 58px;
+    font-size: 16px;
+}
+
+.remember-label {
+    font-size: 14px !important;
+}
+
+.main-login-button,
+.biometric-button {
+    height: 56px;
+    font-size: 16px;
+}
+
+.security-note p {
+    font-size: 13px;
+}
+
+.back-home {
+    min-height: 46px;
+    font-size: 15px;
+}
+
+/* ================= MAIN CONTENT WIDTH ================= */
+
+.dashboard-main,
+.teacher-dashboard-main,
+.attendance-session-main,
+.attendance-history-main,
+.teacher-records-main,
+.teacher-session-details-main {
+    max-width: var(--sap-wide-content);
+    padding: 46px 32px 64px;
+}
+
+.profile-main,
+.teacher-profile-main {
+    max-width: var(--sap-medium-content);
+    padding: 44px 32px 60px;
+}
+
+.student-attendance-main {
+    max-width: 1100px;
+    padding: 44px 32px 60px;
+}
+
+/* ================= PAGE HEADINGS ================= */
+
+.dashboard-welcome h1,
+.teacher-welcome h1 {
+    font-size: clamp(36px, 4vw, 48px);
+}
+
+.dashboard-welcome p,
+.teacher-welcome p {
+    font-size: 17px;
+}
+
+.current-date span,
+.teacher-date span {
+    font-size: 12px;
+}
+
+.current-date strong,
+.teacher-date strong {
+    font-size: 15px;
+}
+
+.profile-heading h1,
+.teacher-profile-header h1,
+.attendance-history-header h1,
+.teacher-records-header h1,
+.teacher-session-details-header h1,
+.session-header h1,
+.student-attendance-header h1 {
+    font-size: clamp(34px, 4vw, 44px);
+}
+
+.profile-heading p,
+.teacher-profile-header p,
+.attendance-history-header p,
+.teacher-records-header p,
+.teacher-session-details-header p,
+.session-header p,
+.student-attendance-header p {
+    font-size: 16px;
+}
+
+/* ================= STAT CARDS ================= */
+
+.stats-grid,
+.teacher-stats-grid {
+    gap: 22px;
+    margin-bottom: 28px;
+}
+
+.stat-card,
+.teacher-stat-card {
+    min-height: 145px;
+    padding: 26px;
+    gap: 20px;
+}
+
+.stat-icon,
+.teacher-stat-icon {
+    width: 58px;
+    height: 58px;
+    font-size: 24px;
+}
+
+.stat-label,
+.teacher-stat-card span {
+    font-size: 13px;
+}
+
+.stat-card h2,
+.teacher-stat-card h2 {
+    font-size: 32px;
+}
+
+.stat-card small,
+.teacher-stat-card small {
+    font-size: 13px;
+}
+
+/* ================= GENERAL CARDS ================= */
+
+.dashboard-card,
+.teacher-card,
+.profile-card,
+.teacher-profile-card,
+.attendance-panel,
+.student-verification-card,
+.active-session-card,
+.attendance-history-panel,
+.teacher-records-panel,
+.teacher-session-students-panel {
+    padding: 30px;
+    border-radius: var(--sap-card-radius);
+}
+
+.card-heading h2,
+.teacher-card-heading h2,
+.attendance-panel-header h2,
+.verification-header h2 {
+    font-size: 22px;
+}
+
+.card-heading p,
+.teacher-card-heading p,
+.attendance-panel-header p,
+.verification-header p {
+    font-size: 14px;
+}
+
+/* ================= TEACHER CLASS LIST ================= */
+
+.class-row {
+    grid-template-columns: 80px 1fr auto;
+    gap: 18px;
+    padding: 20px 0;
+}
+
+.class-time {
+    font-size: 16px;
+}
+
+.class-details strong,
+.subject-info strong {
+    font-size: 15px;
+}
+
+.class-details span,
+.subject-info small {
+    font-size: 13px;
+}
+
+.class-select-button {
+    padding: 10px 18px;
+    font-size: 13px;
+}
+
+.selected-class-box {
+    padding: 20px;
+}
+
+.selected-class-box span {
+    font-size: 11px;
+}
+
+.selected-class-box strong {
+    font-size: 17px;
+}
+
+.selected-class-box small {
+    font-size: 13px;
+}
+
+.teacher-input-group select {
+    height: 54px;
+    font-size: 15px;
+}
+
+.room-info-item {
+    padding: 17px;
+}
+
+.room-info-item span {
+    font-size: 12px;
+}
+
+.room-info-item strong {
+    font-size: 15px;
+}
+
+.start-session-button {
+    height: 56px;
+    font-size: 15px;
+}
+
+.session-security-note p {
+    font-size: 12px;
+}
+
+/* ================= STUDENT DASHBOARD ================= */
+
+.attendance-row {
+    padding: 18px 0;
+}
+
+.subject-icon {
+    width: 46px;
+    height: 46px;
+    font-size: 12px;
+}
+
+.status {
+    padding: 8px 12px;
+    font-size: 12px;
+}
+
+.action-section,
+.teacher-session-banner {
+    padding: 28px 30px;
+}
+
+.action-content h2,
+.teacher-session-banner h2 {
+    font-size: 19px;
+}
+
+.action-content p,
+.teacher-session-banner p {
+    font-size: 14px;
+}
+
+.attendance-button,
+.attendance-history-button,
+.teacher-records-button {
+    min-height: 46px;
+    font-size: 14px;
+}
+
+/* ================= PROFILE PAGES ================= */
+
+.profile-name h2 {
+    font-size: 30px;
+}
+
+.profile-name p {
+    font-size: 15px;
+}
+
+.section-title h3 {
+    font-size: 19px;
+}
+
+.section-title p {
+    font-size: 13px;
+}
+
+.information-item,
+.security-item,
+.teacher-profile-detail {
+    padding: 20px;
+}
+
+.information-item span,
+.security-item span:first-child {
+    font-size: 12px;
+}
+
+.information-item strong,
+.security-item strong {
+    font-size: 15px;
+}
+
+.teacher-profile-detail span {
+    font-size: 13px;
+}
+
+.teacher-profile-detail strong {
+    font-size: 17px;
+}
+
+/* ================= SESSION + VERIFICATION ================= */
+
+.session-info-card {
+    min-height: 110px;
+    padding: 22px;
+}
+
+.session-info-card span,
+.session-info-grid small,
+.session-info-grid label {
+    font-size: 12px;
+}
+
+.session-info-card strong,
+.session-info-grid strong {
+    font-size: 16px;
+}
+
+.live-stat-card {
+    min-height: 120px;
+    padding: 22px;
+}
+
+.live-stat-card span {
+    font-size: 13px;
+}
+
+.live-stat-card strong {
+    font-size: 30px;
+}
+
+.active-session-heading h2 {
+    font-size: 23px;
+}
+
+.active-session-heading p {
+    font-size: 14px;
+}
+
+.student-session-details span,
+.verification-step-content p,
+.student-attendance-security p {
+    font-size: 12px;
+}
+
+.student-session-details strong,
+.verification-step-content h3 {
+    font-size: 15px;
+}
+
+.verification-step {
+    padding: 20px 0;
+}
+
+.verify-attendance-button {
+    min-height: 56px;
+    font-size: 15px;
+}
+
+.verification-action-note {
+    font-size: 12px;
+}
+
+/* ================= TABLES ================= */
+
+.attendance-table th,
+.attendance-history-table th,
+.teacher-records-table th,
+.teacher-session-students-table th {
+    padding: 16px;
+    font-size: 12px;
+}
+
+.attendance-table td,
+.attendance-history-table td,
+.teacher-records-table td,
+.teacher-session-students-table td {
+    padding: 18px 16px;
+    font-size: 14px;
+}
+
+.attendance-table td:first-child,
+.attendance-table td strong {
+    font-size: 15px !important;
+}
+
+/* ================= NOTIFICATIONS ================= */
+
+.sap-toast-title {
+    font-size: 14px;
+}
+
+.sap-toast-message {
+    font-size: 13px;
+}
+
+/* ================= TABLET ================= */
+
+@media (max-width: 1000px) {
+
+    .dashboard-main,
+    .teacher-dashboard-main,
+    .attendance-session-main,
+    .attendance-history-main,
+    .teacher-records-main,
+    .teacher-session-details-main,
+    .profile-main,
+    .teacher-profile-main,
+    .student-attendance-main {
+        padding: 32px 22px 48px;
+    }
+
+    .stat-card,
+    .teacher-stat-card {
+        min-height: 125px;
+        padding: 22px;
+    }
+
+    .dashboard-card,
+    .teacher-card,
+    .profile-card,
+    .teacher-profile-card,
+    .attendance-panel,
+    .student-verification-card,
+    .active-session-card,
+    .attendance-history-panel,
+    .teacher-records-panel,
+    .teacher-session-students-panel {
+        padding: 24px;
+    }
+}
+
+/* ================= MOBILE ================= */
+
+@media (max-width: 650px) {
+
+    body {
+        font-size: 16px;
+    }
+
+    .navbar {
+        height: 68px;
+        min-height: 68px;
+    }
+
+    .dashboard-navbar,
+    .history-navbar {
+        min-height: 68px;
+    }
+
+    .logo {
+        font-size: 24px;
+    }
+
+    footer,
+    .dashboard-footer {
+        font-size: 12px;
+    }
+
+    .hero {
+        padding: 36px 16px 48px;
+    }
+
+    .hero h1 {
+        font-size: 38px;
+        letter-spacing: -1.3px;
+    }
+
+    .hero-content > p {
+        font-size: 16px;
+        margin-bottom: 32px;
+    }
+
+    .login-options {
+        gap: 20px;
+    }
+
+    .login-card {
+        width: 100%;
+        max-width: 400px;
+        min-height: 320px;
+        padding: 30px 24px;
+    }
+
+    .login-page {
+        padding: 32px 16px 42px;
+    }
+
+    .login-container {
+        max-width: 440px;
+    }
+
+    .login-header h1 {
+        font-size: 33px;
+    }
+
+    .student-login-card {
+        padding: 26px 20px;
+    }
+
+    .input-wrapper input {
+        height: 54px;
+    }
+
+    .dashboard-main,
+    .teacher-dashboard-main,
+    .attendance-session-main,
+    .attendance-history-main,
+    .teacher-records-main,
+    .teacher-session-details-main,
+    .profile-main,
+    .teacher-profile-main,
+    .student-attendance-main {
+        padding: 28px 16px 42px;
+    }
+
+    .dashboard-welcome h1,
+    .teacher-welcome h1,
+    .profile-heading h1,
+    .teacher-profile-header h1,
+    .attendance-history-header h1,
+    .teacher-records-header h1,
+    .teacher-session-details-header h1,
+    .session-header h1,
+    .student-attendance-header h1 {
+        font-size: 30px;
+    }
+
+    .stats-grid,
+    .teacher-stats-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .stat-card,
+    .teacher-stat-card {
+        min-height: 108px;
+        padding: 18px;
+    }
+
+    .dashboard-card,
+    .teacher-card,
+    .profile-card,
+    .teacher-profile-card,
+    .attendance-panel,
+    .student-verification-card,
+    .active-session-card,
+    .attendance-history-panel,
+    .teacher-records-panel,
+    .teacher-session-students-panel {
+        padding: 20px 16px;
+    }
+
+    .class-row {
+        grid-template-columns: 58px 1fr;
+        gap: 10px;
+        padding: 16px 0;
+    }
+
+    .class-select-button {
+        grid-column: 2;
+        justify-self: start;
+    }
+
+    .room-info-box,
+    .information-grid,
+    .teacher-profile-details,
+    .session-info-grid,
+    .live-stat-grid,
+    .teacher-session-summary,
+    .attendance-history-summary,
+    .teacher-records-summary {
+        grid-template-columns: 1fr;
+    }
+
+    .action-section {
+        padding: 22px;
+    }
+
+    .attendance-table th,
+    .attendance-history-table th,
+    .teacher-records-table th,
+    .teacher-session-students-table th,
+    .attendance-table td,
+    .attendance-history-table td,
+    .teacher-records-table td,
+    .teacher-session-students-table td {
+        padding: 12px 10px;
+        font-size: 12px;
+    }
+}

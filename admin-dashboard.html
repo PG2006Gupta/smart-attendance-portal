@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Device Administration | SAP</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/layout-scale.css">
+    <link rel="stylesheet" href="css/app-enhancements.css">
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+    <header class="dashboard-navbar">
+        <a href="admin-dashboard.html" class="dashboard-logo">🎓 <span>SAP</span></a>
+        <div class="dashboard-right">
+            <span class="portal-label">Administrator Portal</span>
+            <div class="profile-dropdown">
+                <button type="button" class="teacher-profile profile-dropdown-toggle" onclick="toggleSAPProfileDropdown(event)" aria-expanded="false" aria-controls="adminProfileMenu" aria-label="Administrator profile menu">
+                    <div class="teacher-avatar" id="adminAvatar">A</div>
+                    <div class="profile-info"><strong id="adminName">Administrator</strong><small>Device administration</small></div>
+                    <span class="profile-dropdown-chevron" aria-hidden="true">▾</span>
+                </button>
+                <div class="profile-dropdown-menu" id="adminProfileMenu" hidden>
+                    <a href="admin-profile.html"><span aria-hidden="true">👤</span>Profile</a>
+                    <a href="index.html" class="profile-dropdown-logout" onclick="adminLogout(event)"><span aria-hidden="true">↪</span>Logout</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="teacher-dashboard-main admin-dashboard-main">
+        <section class="teacher-welcome">
+            <div>
+                <span class="dashboard-badge">DEVICE ADMINISTRATION</span>
+                <h1 id="adminWelcomeHeading">Administrator controls</h1>
+                <p>Open registration windows, revoke devices, and review the audit trail.</p>
+            </div>
+            <div class="teacher-date"><span>POLICY</span><strong>Maximum 2 current devices</strong></div>
+        </section>
+
+        <section class="teacher-stats-grid">
+            <div class="teacher-stat-card">
+                <div class="teacher-stat-icon blue-stat">#</div>
+                <div><span>Students</span><h2 id="adminTotalStudents">0</h2><small>Student records</small></div>
+            </div>
+            <div class="teacher-stat-card">
+                <div class="teacher-stat-icon green-stat">✓</div>
+                <div><span>Current Devices</span><h2 id="adminCurrentDevices">0</h2><small>Pending or active</small></div>
+            </div>
+            <div class="teacher-stat-card">
+                <div class="teacher-stat-icon purple-stat">◉</div>
+                <div><span>Open Windows</span><h2 id="adminOpenWindows">0</h2><small>Registration available now</small></div>
+            </div>
+            <div class="teacher-stat-card">
+                <div class="teacher-stat-icon orange-stat">!</div>
+                <div><span>Locked Students</span><h2 id="adminLockedStudents">0</h2><small>No open registration window</small></div>
+            </div>
+        </section>
+
+        <section class="teacher-card admin-directory-card">
+            <div class="teacher-card-heading">
+                <div><h2>Find a Student</h2><p>Search by name or student ID, then select a record to manage.</p></div>
+                <span class="today-label">DEVICE ACCESS</span>
+            </div>
+            <form class="admin-search-row" onsubmit="searchAdminStudents(); return false;">
+                <label for="adminStudentSearch">Student name or ID</label>
+                <div class="admin-search-controls">
+                    <input id="adminStudentSearch" type="search" maxlength="100" placeholder="For example, CU123456" autocomplete="off">
+                    <button type="submit" class="teacher-records-button">Search</button>
+                </div>
+            </form>
+            <div id="adminStudentResults" class="admin-student-results" aria-live="polite">
+                <p class="sap-empty-state">Search for a student to begin.</p>
+            </div>
+        </section>
+
+        <section class="teacher-content-grid admin-content-grid">
+            <div class="teacher-card admin-devices-card">
+                <div class="teacher-card-heading">
+                    <div><h2 id="adminSelectedStudentName">No Student Selected</h2><p id="adminSelectedStudentId">Select a student from the search results.</p></div>
+                    <span class="teacher-record-status" id="adminRegistrationStatus">LOCKED</span>
+                </div>
+                <div class="selected-class-box admin-window-summary">
+                    <span>REGISTRATION WINDOW</span>
+                    <strong id="adminWindowStatus">No student selected</strong>
+                    <small id="adminWindowExpiry">Window changes require an administrative reason.</small>
+                </div>
+                <div id="adminDeviceList" class="sap-device-list">
+                    <p class="sap-empty-state">Devices will appear here.</p>
+                </div>
+            </div>
+
+            <div class="teacher-card admin-controls-card">
+                <div class="teacher-card-heading">
+                    <div><h2>Administrative Actions</h2><p>All actions apply to the selected student.</p></div>
+                </div>
+
+                <div class="teacher-input-group">
+                    <label for="adminActionReason">Reason (required)</label>
+                    <textarea id="adminActionReason" rows="3" minlength="3" maxlength="300" placeholder="For example, student replaced a lost phone" disabled></textarea>
+                </div>
+
+                <div class="teacher-input-group">
+                    <label for="adminWindowDuration">Registration window duration</label>
+                    <select id="adminWindowDuration" disabled>
+                        <option value="5">5 minutes</option>
+                        <option value="15" selected>15 minutes</option>
+                        <option value="30">30 minutes</option>
+                        <option value="60">60 minutes</option>
+                    </select>
+                </div>
+
+                <div class="sap-action-stack">
+                    <button type="button" class="start-session-button" id="adminOpenWindowButton" onclick="changeAdminRegistrationWindow('open')" disabled>Open Registration Window</button>
+                    <button type="button" class="teacher-records-button" id="adminCloseWindowButton" onclick="changeAdminRegistrationWindow('close')" disabled>Close Window &amp; Lock</button>
+                    <button type="button" class="teacher-records-button admin-danger-button" id="adminResetDevicesButton" onclick="resetAdminStudentDevices()" disabled>Revoke All Devices &amp; Start Again</button>
+                </div>
+
+                <div class="session-security-note">
+                    <span>🛡️</span>
+                    <p>The second successful registration automatically locks the window. Opening a window alone does not remove existing devices.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="teacher-card admin-audit-card">
+            <div class="teacher-card-heading">
+                <div><h2>Administrative Audit Trail</h2><p id="adminAuditSubtitle">Select a student to view actor, reason, action, and timestamp.</p></div>
+                <span class="today-label">READ ONLY</span>
+            </div>
+            <div id="adminAuditList" class="admin-audit-list">
+                <p class="sap-empty-state">No student selected.</p>
+            </div>
+        </section>
+
+        <section class="teacher-session-banner">
+            <div class="session-banner-icon">🛡️</div>
+            <div><h2>Device approval is one attendance control</h2><p>A registration window does not prevent proxy attendance by itself. Device signatures, active sessions, location checks, and institutional supervision remain separate controls.</p></div>
+        </section>
+    </main>
+
+    <footer class="dashboard-footer">
+        <p>© 2026 Smart Attendance Portal (SAP)</p>
+    </footer>
+
+    <script src="js/script.js"></script>
+    <script src="js/admin-portal.js"></script>
+    <script>initializeAdminDashboard();</script>
+</body>
+</html>

@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Teacher Login | SAP</title>
+
+    <link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/layout-scale.css">
+
+</head>
+
+
+<body>
+
+    <!-- ================= NAVBAR ================= -->
+
+    <header class="navbar">
+
+        <a href="index.html" class="logo logo-link">
+            🎓 <span>SAP</span>
+        </a>
+
+        <div class="portal-name">
+            Teacher Portal
+        </div>
+
+    </header>
+
+
+
+    <!-- ================= LOGIN SECTION ================= -->
+
+    <main class="login-page">
+
+        <div class="login-container">
+
+
+            <!-- LOGIN HEADER -->
+
+            <div class="login-header">
+
+                <div class="login-main-icon teacher-main-icon">
+                    👨‍🏫
+                </div>
+
+                <div class="badge">
+                    TEACHER PORTAL
+                </div>
+
+                <h1>
+                    Welcome Back
+                </h1>
+
+                <p>
+                    Sign in to manage attendance sessions
+                    and monitor student attendance.
+                </p>
+
+            </div>
+
+
+
+            <!-- LOGIN CARD -->
+
+            <div class="student-login-card">
+
+
+                <!-- TEACHER ID -->
+
+                <div class="input-group">
+
+                    <label for="teacherId">
+                        Teacher ID
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <span class="input-icon teacher-id-icon">
+                            ID
+                        </span>
+
+                        <input
+                            type="text"
+                            id="teacherId"
+                            placeholder="Enter your Teacher ID"
+                            autocomplete="username"
+                        >
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- PASSWORD -->
+
+                <div class="input-group">
+
+                    <div class="label-row">
+
+                        <label for="teacherPassword">
+                            Password
+                        </label>
+
+                        <a
+                            href="#"
+                            class="forgot-password">
+
+                            Forgot Password?
+
+                        </a>
+
+                    </div>
+
+
+                    <div class="input-wrapper">
+
+                        <span class="input-icon">
+                            🔒
+                        </span>
+
+                        <input
+                            type="password"
+                            id="teacherPassword"
+                            placeholder="Enter your password"
+                            autocomplete="current-password"
+                        >
+
+                        <button
+                            type="button"
+                            class="password-toggle"
+                            onclick="toggleTeacherPassword()"
+                            aria-label="Show password">
+
+                            👁
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- REMEMBER ME -->
+
+                <div class="remember-row">
+
+                    <label class="remember-label">
+
+                        <input
+                            type="checkbox"
+                            id="teacherRememberMe"
+                        >
+
+                        <span>
+                            Remember me
+                        </span>
+
+                    </label>
+
+                </div>
+
+
+
+                <!-- LOGIN BUTTON -->
+
+                <button
+                    type="button"
+                    class="main-login-button"
+                    onclick="teacherLogin()">
+
+                    Login to Teacher Portal →
+
+                </button>
+
+
+
+                <!-- DIVIDER -->
+
+                <div class="login-divider">
+
+                    <span>OR</span>
+
+                </div>
+
+
+
+                <!-- PASSKEY BUTTON -->
+
+                <button
+                    type="button"
+                    class="biometric-button"
+                    onclick="teacherBiometricLogin()">
+
+                    <span class="biometric-icon">
+                        🔐
+                    </span>
+
+                    <span>
+                        Login with Passkey
+                    </span>
+
+                </button>
+
+
+
+                <!-- SECURITY NOTE -->
+
+                <div class="security-note">
+
+                    <span>🛡️</span>
+
+                    <p>
+                        Your account is protected with
+                        secure authentication.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- BACK HOME -->
+
+            <a
+                href="index.html"
+                class="back-home">
+
+                ← Back to Home
+
+            </a>
+
+
+        </div>
+
+    </main>
+
+
+
+    <!-- ================= FOOTER ================= -->
+
+    <footer>
+
+        <p>
+            © 2026 Smart Attendance Portal (SAP)
+        </p>
+
+        <p>
+            Secure • Reliable • Smart
+        </p>
+
+    </footer>
+
+
+
+    <script src="js/script.js"></script>
+    <script src="js/passkeys.js"></script>
+
+</body>
+
+</html>

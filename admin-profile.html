@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administrator Profile | SAP</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/layout-scale.css">
+    <link rel="stylesheet" href="css/app-enhancements.css">
+</head>
+<body>
+    <nav class="history-navbar">
+        <a href="admin-dashboard.html" class="history-nav-brand"><span class="history-nav-logo">SAP</span></a>
+        <div class="history-nav-title">Administrator Portal</div>
+        <div class="profile-dropdown history-nav-profile">
+            <button type="button" class="history-profile-toggle profile-dropdown-toggle" onclick="toggleSAPProfileDropdown(event)" aria-expanded="false" aria-controls="adminProfileMenu" aria-label="Administrator profile menu">
+                <div class="history-profile-avatar sap-initial-avatar" id="adminProfileAvatar">A</div>
+                <div class="history-profile-info"><strong id="adminName">Administrator</strong><span>Device administration</span></div>
+                <span class="profile-dropdown-chevron" aria-hidden="true">▾</span>
+            </button>
+            <div class="profile-dropdown-menu" id="adminProfileMenu" hidden>
+                <a href="admin-profile.html"><span aria-hidden="true">👤</span>Profile</a>
+                <a href="index.html" class="profile-dropdown-logout" onclick="adminLogout(event)"><span aria-hidden="true">↪</span>Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="teacher-profile-main">
+        <section class="teacher-profile-header">
+            <span class="teacher-profile-badge">ADMINISTRATOR PROFILE</span>
+            <h1>Administrator Profile</h1>
+            <p>View your SAP administrator identity and device-administration overview.</p>
+        </section>
+
+        <section class="teacher-profile-card">
+            <div class="teacher-profile-top">
+                <div class="teacher-profile-avatar-large"><span id="adminProfileLargeAvatar">A</span></div>
+                <div class="teacher-profile-identity">
+                    <h2 id="adminProfileName">Loading...</h2>
+                    <p>Device Administrator</p>
+                    <span class="teacher-profile-active">● Protected administrator session</span>
+                </div>
+            </div>
+
+            <div class="teacher-profile-details">
+                <div class="teacher-profile-detail"><span>Administrator ID</span><strong id="adminProfileId">—</strong></div>
+                <div class="teacher-profile-detail"><span>Full Name</span><strong id="adminProfileFullName">—</strong></div>
+                <div class="teacher-profile-detail"><span>Email</span><strong id="adminProfileEmail">—</strong></div>
+                <div class="teacher-profile-detail"><span>Role</span><strong>Device administration</strong></div>
+                <div class="teacher-profile-detail"><span>Students</span><strong id="adminProfileStudents">0</strong></div>
+                <div class="teacher-profile-detail"><span>Current Devices</span><strong id="adminProfileDevices">0</strong></div>
+                <div class="teacher-profile-detail"><span>Open Registration Windows</span><strong id="adminProfileWindows">0</strong></div>
+                <div class="teacher-profile-detail"><span>Authentication</span><strong>Password and protected session</strong></div>
+            </div>
+
+            <div class="teacher-profile-security">
+                <div class="teacher-profile-security-icon">🛡️</div>
+                <div>
+                    <h3>Audited Administration</h3>
+                    <p>Device changes require an administrative reason and are recorded with their actor, action, and timestamp.</p>
+                    <a href="admin-dashboard.html" class="teacher-records-button">Open Device Administration →</a>
+                </div>
+            </div>
+        </section>
+
+        <div class="teacher-profile-actions"><a href="admin-dashboard.html" class="teacher-profile-back">← Back to Dashboard</a></div>
+    </main>
+
+    <script src="js/script.js"></script>
+    <script src="js/admin-portal.js"></script>
+    <script>initializeAdminProfile();</script>
+</body>
+</html>

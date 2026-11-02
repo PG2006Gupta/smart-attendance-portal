@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administrator Login | SAP</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/layout-scale.css">
+</head>
+<body>
+    <header class="navbar">
+        <a href="index.html" class="logo logo-link">🎓 <span>SAP</span></a>
+        <div class="portal-name">Administrator Portal</div>
+    </header>
+
+    <main class="login-page">
+        <div class="login-container">
+            <div class="login-header">
+                <div class="login-main-icon teacher-main-icon">🛡️</div>
+                <div class="badge">ADMINISTRATOR PORTAL</div>
+                <h1>Device Administration</h1>
+                <p>Sign in to manage student device registration windows and review audited changes.</p>
+            </div>
+
+            <form class="student-login-card" onsubmit="adminLogin(); return false;">
+                <div class="input-group">
+                    <label for="adminId">Administrator ID</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon teacher-id-icon">ID</span>
+                        <input
+                            type="text"
+                            id="adminId"
+                            placeholder="Enter your Administrator ID"
+                            autocomplete="username"
+                            required
+                        >
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="adminPassword">Password</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">🔒</span>
+                        <input
+                            type="password"
+                            id="adminPassword"
+                            placeholder="Enter your password"
+                            autocomplete="current-password"
+                            required
+                        >
+                        <button
+                            type="button"
+                            class="password-toggle"
+                            onclick="toggleAdminPassword()"
+                            aria-label="Show password"
+                        >👁</button>
+                    </div>
+                </div>
+
+                <button type="submit" class="main-login-button">
+                    Login to Administrator Portal →
+                </button>
+
+                <div class="security-note">
+                    <span>🛡️</span>
+                    <p>Every device administration action requires a reason and is recorded with its actor and timestamp.</p>
+                </div>
+            </form>
+
+            <a href="index.html" class="back-home">← Back to Home</a>
+        </div>
+    </main>
+
+    <footer>
+        <p>© 2026 Smart Attendance Portal (SAP)</p>
+        <p>Secure • Reliable • Smart</p>
+    </footer>
+
+    <script src="js/script.js"></script>
+</body>
+</html>

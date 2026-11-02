@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance Session | SAP</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/layout-scale.css">
+    <link rel="stylesheet" href="css/app-enhancements.css">
+</head>
+<body>
+    <header class="dashboard-navbar">
+        <a href="teacher-dashboard.html" class="dashboard-logo">🎓 <span>SAP</span></a>
+        <div class="dashboard-right">
+            <span class="portal-label">Teacher Portal</span>
+            <div class="profile-dropdown">
+                <button type="button" class="teacher-profile profile-dropdown-toggle" onclick="toggleSAPProfileDropdown(event)" aria-expanded="false" aria-controls="teacherProfileMenu" aria-label="Teacher profile menu">
+                    <div class="teacher-avatar" id="teacherAvatar">T</div>
+                    <div class="profile-info"><strong id="teacherName">Teacher</strong><small>Faculty</small></div>
+                    <span class="profile-dropdown-chevron" aria-hidden="true">▾</span>
+                </button>
+                <div class="profile-dropdown-menu" id="teacherProfileMenu" hidden>
+                    <a href="teacher-profile.html"><span aria-hidden="true">👤</span>Profile</a>
+                    <a href="index.html" class="profile-dropdown-logout" onclick="teacherLogout(event)"><span aria-hidden="true">↪</span>Logout</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="attendance-session-main">
+        <section class="session-header">
+            <div>
+                <span class="dashboard-badge">ATTENDANCE SESSION</span>
+                <h1 id="sessionSubject">Loading session...</h1>
+                <p id="sessionDetails">Loading session details...</p>
+            </div>
+            <div class="session-live-status" id="sessionLiveStatus">
+                <span class="live-dot"></span><span id="sessionStatusText">Checking Status</span>
+            </div>
+            <div class="session-timer">
+                <span class="session-timer-label">Time Remaining</span>
+                <strong id="sessionTimer">--:--</strong>
+            </div>
+        </section>
+
+        <section class="session-info-grid">
+            <div class="session-info-card"><span>SUBJECT</span><strong id="sessionSubjectCard">Loading...</strong></div>
+            <div class="session-info-card"><span>CLASSROOM</span><strong id="sessionClassroom">Loading...</strong></div>
+            <div class="session-info-card"><span>ATTENDANCE RANGE</span><strong id="sessionRadius">Loading...</strong></div>
+            <div class="session-info-card"><span>EXPECTED STUDENTS</span><strong id="sessionExpectedStudents">0</strong></div>
+        </section>
+
+        <section class="live-stat-grid">
+            <div class="live-stat-card">
+                <div class="live-stat-icon detected-icon">◉</div>
+                <div><span>Students Detected</span><strong id="sessionDetectedCount">0</strong></div>
+            </div>
+            <div class="live-stat-card">
+                <div class="live-stat-icon present-icon">✓</div>
+                <div><span>Present</span><strong id="sessionPresentCount">0</strong></div>
+            </div>
+            <div class="live-stat-card">
+                <div class="live-stat-icon pending-icon">⏳</div>
+                <div><span>Pending</span><strong id="sessionPendingCount">0</strong></div>
+            </div>
+            <div class="live-stat-card">
+                <div class="live-stat-icon absent-icon">×</div>
+                <div><span>Absent</span><strong id="sessionAbsentCount">0</strong></div>
+            </div>
+        </section>
+
+        <section class="attendance-panel">
+            <div class="attendance-panel-header">
+                <div><h2>Live Student Attendance</h2><p>Enrolled students and their latest server verification outcome.</p></div>
+                <span class="location-verification-badge">Checking Location Setup</span>
+            </div>
+            <div class="attendance-table-wrapper">
+                <table class="attendance-table">
+                    <thead><tr><th>Student</th><th>Student ID</th><th>Device</th><th>Location</th><th>Status</th></tr></thead>
+                    <tbody id="sessionStudentRows"><tr><td colspan="5">Loading enrolled students...</td></tr></tbody>
+                </table>
+            </div>
+            <div class="verification-info">
+                <div class="verification-icon">🛡️</div>
+                <div><h3>Attendance Verification</h3><p>Attendance is recorded only after a valid registered-device signature and server-side classroom verification.</p></div>
+            </div>
+        </section>
+
+        <section class="session-actions">
+            <a href="teacher-dashboard.html" class="secondary-session-button">← Back to Dashboard</a>
+            <button type="button" class="end-session-button" id="endSessionButton" onclick="endRealTeacherAttendanceSession()">End Attendance Session</button>
+        </section>
+    </main>
+
+    <footer class="dashboard-footer"><p>© 2026 Smart Attendance Portal (SAP)</p></footer>
+
+    <script src="js/script.js"></script>
+    <script src="js/teacher-session.js"></script>
+    <script src="js/teacher-session-students.js"></script>
+    <script>initializeTeacherAttendanceSessionPage();</script>
+</body>
+</html>

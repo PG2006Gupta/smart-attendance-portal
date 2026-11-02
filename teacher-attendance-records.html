@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance Records | SAP</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/layout-scale.css">
+    <link rel="stylesheet" href="css/app-enhancements.css">
+</head>
+<body>
+    <nav class="history-navbar">
+        <a href="teacher-dashboard.html" class="history-nav-brand"><span class="history-nav-logo">SAP</span></a>
+        <div class="history-nav-title">Teacher Portal</div>
+        <div class="profile-dropdown history-nav-profile">
+            <button type="button" class="history-profile-toggle profile-dropdown-toggle" onclick="toggleSAPProfileDropdown(event)" aria-expanded="false" aria-controls="teacherProfileMenu" aria-label="Teacher profile menu">
+                <div class="history-profile-avatar sap-initial-avatar" id="teacherProfileAvatar">T</div>
+                <div class="history-profile-info"><strong id="teacherName">Teacher</strong><span>Faculty</span></div>
+                <span class="profile-dropdown-chevron" aria-hidden="true">▾</span>
+            </button>
+            <div class="profile-dropdown-menu" id="teacherProfileMenu" hidden>
+                <a href="teacher-profile.html"><span aria-hidden="true">👤</span>Profile</a>
+                <a href="index.html" class="profile-dropdown-logout" onclick="teacherLogout(event)"><span aria-hidden="true">↪</span>Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="teacher-records-main">
+        <section class="teacher-records-header">
+            <span class="teacher-records-badge">TEACHER RECORDS</span>
+            <h1>Attendance Records</h1>
+            <p>Review attendance sessions and student records.</p>
+        </section>
+
+        <section class="teacher-records-summary">
+            <div class="teacher-record-summary-card"><span>Total Sessions</span><strong id="recordsTotalSessions">0</strong><small>All recorded sessions</small></div>
+            <div class="teacher-record-summary-card"><span>Students Present</span><strong id="recordsStudentsPresent">0</strong><small>Across all sessions</small></div>
+            <div class="teacher-record-summary-card"><span>Students Absent</span><strong id="recordsStudentsAbsent">0</strong><small>Across all sessions</small></div>
+        </section>
+
+        <section class="teacher-records-panel">
+            <div class="teacher-records-panel-header"><div><h2>Attendance Sessions</h2><p>Most recent sessions first</p></div></div>
+            <div class="teacher-records-table-wrapper">
+                <table class="teacher-records-table">
+                    <thead><tr><th>Date</th><th>Subject</th><th>Section</th><th>Classroom</th><th>Present</th><th>Absent</th><th>Status</th><th>Action</th></tr></thead>
+                    <tbody id="teacherRecordsRows"><tr><td colspan="8">Loading attendance records...</td></tr></tbody>
+                </table>
+            </div>
+        </section>
+
+        <div class="teacher-records-back"><a href="teacher-dashboard.html">← Back to Dashboard</a></div>
+    </main>
+
+    <script src="js/script.js"></script>
+    <script src="js/teacher-portal.js"></script>
+    <script>initializeTeacherRecords();</script>
+</body>
+</html>

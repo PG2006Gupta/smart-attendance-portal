@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Profile | SAP</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/layout-scale.css">
+    <link rel="stylesheet" href="css/app-enhancements.css">
+</head>
+<body>
+    <header class="dashboard-navbar">
+        <a href="student-dashboard.html" class="dashboard-logo">🎓 <span>SAP</span></a>
+        <div class="dashboard-right">
+            <span class="portal-label">Student Portal</span>
+            <div class="profile-dropdown">
+                <button type="button" class="student-profile profile-dropdown-toggle" onclick="toggleSAPProfileDropdown(event)" aria-expanded="false" aria-controls="studentProfileMenu" aria-label="Student profile menu">
+                    <div class="profile-avatar sap-initial-avatar" id="studentAvatar">S</div>
+                    <div class="profile-info"><strong id="studentName">Student</strong><small>Student</small></div>
+                    <span class="profile-dropdown-chevron" aria-hidden="true">▾</span>
+                </button>
+                <div class="profile-dropdown-menu" id="studentProfileMenu" hidden>
+                    <a href="student-profile.html"><span aria-hidden="true">👤</span>Profile</a>
+                    <a href="index.html" class="profile-dropdown-logout" onclick="studentLogout(event)"><span aria-hidden="true">↪</span>Logout</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="profile-main">
+        <section class="profile-heading">
+            <span class="dashboard-badge">STUDENT PROFILE</span>
+            <h1>My Profile</h1>
+            <p>View your personal, academic, and security information.</p>
+        </section>
+
+        <section class="profile-card">
+            <div class="profile-top">
+                <div class="large-profile-avatar sap-initial-avatar sap-large-initial" id="studentProfileAvatar">S</div>
+                <div class="profile-name">
+                    <h2 id="studentProfileName">Loading...</h2>
+                    <p>Student</p>
+                    <span class="account-status" id="studentAccountStatus">● Checking account</span>
+                </div>
+            </div>
+
+            <div class="profile-section">
+                <div class="section-title">
+                    <span class="section-icon">👤</span>
+                    <div><h3>Student Information</h3><p>Your academic information</p></div>
+                </div>
+                <div class="information-grid">
+                    <div class="information-item"><span>Student ID</span><strong id="studentProfileId">—</strong></div>
+                    <div class="information-item"><span>Full Name</span><strong id="studentProfileFullName">—</strong></div>
+                    <div class="information-item"><span>Course</span><strong id="studentProfileCourse">—</strong></div>
+                    <div class="information-item"><span>Section</span><strong id="studentProfileSection">—</strong></div>
+                    <div class="information-item"><span>Semester</span><strong id="studentProfileSemester">—</strong></div>
+                    <div class="information-item"><span>Academic Year</span><strong id="studentProfileAcademicYear">—</strong></div>
+                </div>
+            </div>
+
+            <div class="profile-section">
+                <div class="section-title">
+                    <span class="section-icon security-section-icon">🔐</span>
+                    <div><h3>Account &amp; Security</h3><p>Registered devices and passkey authentication</p></div>
+                </div>
+                <div class="security-grid">
+                    <div class="security-item">
+                        <div><span>Registered Devices</span><strong id="studentRegisteredDevices">0 / 2 Devices</strong></div>
+                        <span class="security-status">Backend Enforced</span>
+                    </div>
+                    <div class="security-item">
+                        <div><span>Authentication</span><strong id="studentAuthenticationMethod">Password only</strong></div>
+                        <button type="button" class="security-status sap-inline-button" onclick="registerSAPPasskey()">Add Passkey</button>
+                    </div>
+                    <div class="security-item">
+                        <div><span>Account Status</span><strong>Protected session</strong></div>
+                        <span class="security-status">Secure</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="profile-section">
+                <div class="section-title">
+                    <span class="section-icon">📱</span>
+                    <div><h3>Attendance Devices</h3><p id="studentDevicePolicy">Device registration is controlled by administration.</p></div>
+                </div>
+                <div class="sap-device-list" id="studentDeviceList"><p>Loading devices...</p></div>
+                <button type="button" class="teacher-records-button" id="studentProfileRegisterDeviceButton" onclick="registerStudentDeviceFromProfile()" hidden>Register This Browser</button>
+            </div>
+
+            <div class="profile-actions">
+                <a href="student-dashboard.html" class="back-dashboard-button">← Back to Dashboard</a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="dashboard-footer">
+        <p>© 2026 Smart Attendance Portal (SAP)</p>
+    </footer>
+
+    <script src="js/script.js"></script>
+    <script src="js/device-security.js"></script>
+    <script src="js/passkeys.js"></script>
+    <script src="js/student-portal.js"></script>
+    <script>initializeStudentProfilePage();</script>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Profile | SAP</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/layout-scale.css">
+    <link rel="stylesheet" href="css/app-enhancements.css">
+</head>
+<body>
+    <nav class="history-navbar">
+        <a href="teacher-dashboard.html" class="history-nav-brand"><span class="history-nav-logo">SAP</span></a>
+        <div class="history-nav-title">Teacher Portal</div>
+        <div class="profile-dropdown history-nav-profile">
+            <button type="button" class="history-profile-toggle profile-dropdown-toggle" onclick="toggleSAPProfileDropdown(event)" aria-expanded="false" aria-controls="teacherProfileMenu" aria-label="Teacher profile menu">
+                <div class="history-profile-avatar sap-initial-avatar" id="teacherProfileAvatar">T</div>
+                <div class="history-profile-info"><strong id="teacherName">Teacher</strong><span>Faculty</span></div>
+                <span class="profile-dropdown-chevron" aria-hidden="true">▾</span>
+            </button>
+            <div class="profile-dropdown-menu" id="teacherProfileMenu" hidden>
+                <a href="teacher-profile.html"><span aria-hidden="true">👤</span>Profile</a>
+                <a href="index.html" class="profile-dropdown-logout" onclick="teacherLogout(event)"><span aria-hidden="true">↪</span>Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="teacher-profile-main">
+        <section class="teacher-profile-header">
+            <span class="teacher-profile-badge">TEACHER PROFILE</span>
+            <h1>Teacher Profile</h1>
+            <p>Manage your SAP teacher account and authentication information.</p>
+        </section>
+
+        <section class="teacher-profile-card">
+            <div class="teacher-profile-top">
+                <div class="teacher-profile-avatar-large"><span id="teacherProfileLargeAvatar">T</span></div>
+                <div class="teacher-profile-identity">
+                    <h2 id="teacherProfileName">Loading...</h2>
+                    <p>Faculty Member</p>
+                    <span class="teacher-profile-active" id="teacherAccountStatus">● Checking account</span>
+                </div>
+            </div>
+
+            <div class="teacher-profile-details">
+                <div class="teacher-profile-detail"><span>Teacher ID</span><strong id="teacherProfileId">—</strong></div>
+                <div class="teacher-profile-detail"><span>Department</span><strong id="teacherProfileDepartment">—</strong></div>
+                <div class="teacher-profile-detail"><span>Email</span><strong id="teacherProfileEmail">—</strong></div>
+                <div class="teacher-profile-detail"><span>Assigned Classes</span><strong id="teacherAssignedClassCount">0</strong></div>
+                <div class="teacher-profile-detail"><span>Authentication</span><strong id="teacherPasskeyStatus">Password only</strong></div>
+                <div class="teacher-profile-detail"><span>Role</span><strong>Faculty</strong></div>
+            </div>
+
+            <div class="teacher-profile-security">
+                <div class="teacher-profile-security-icon">🛡️</div>
+                <div>
+                    <h3>Secure Account</h3>
+                    <p>Add a passkey to use your device authenticator for protected login.</p>
+                    <button type="button" class="teacher-records-button" onclick="registerSAPPasskey()">Register a Passkey</button>
+                </div>
+            </div>
+        </section>
+
+        <div class="teacher-profile-actions"><a href="teacher-dashboard.html" class="teacher-profile-back">← Back to Dashboard</a></div>
+    </main>
+
+    <script src="js/script.js"></script>
+    <script src="js/passkeys.js"></script>
+    <script src="js/teacher-portal.js"></script>
+    <script>initializeTeacherProfile();</script>
+</body>
+</html>

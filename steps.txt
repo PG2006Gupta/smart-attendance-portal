@@ -1,0 +1,114 @@
+🚀 How I suggest we build SAP
+
+Rather than throwing 2,000 lines of code at you, we'll develop it in stages:
+
+Phase 1 — UI
+
+We'll build:
+
+Landing page
+Student login
+Teacher login
+Student dashboard
+Teacher dashboard
+Attendance page
+
+You already have enough HTML/CSS/JS experience for this part.
+
+Phase 2 — Node.js
+
+We'll learn:
+
+Node.js
+   ↓
+npm
+   ↓
+Express
+   ↓
+Server
+Phase 3 — MySQL
+
+We'll create:
+
+students
+teachers
+subjects
+classes
+devices
+attendance_sessions
+attendance
+Phase 4 — Authentication
+
+We'll implement:
+
+Registration
+↓
+Password hashing
+↓
+Login
+↓
+Session/token
+↓
+Protected routes
+Phase 5 — Device management
+
+Implement:
+
+Maximum 2 registered devices
+Phase 6 — Biometric authentication
+
+Implement:
+
+WebAuthn / Passkeys
+Phase 7 — Location
+
+Implement:
+
+Browser location
+       ↓
+Accuracy
+       ↓
+Distance calculation
+       ↓
+Teacher-defined radius
+Phase 8 — Attendance engine
+
+Combine everything:
+
+Authentication
+       +
+Device validation
+       +
+Active session
+       +
+Location verification
+       +
+Time window
+       ↓
+Attendance
+Phase 9 — Security & testing
+
+We'll test things like:
+
+Wrong password
+Unauthorized dashboard access
+Third device
+Outside attendance zone
+Expired attendance session
+Duplicate attendance
+Invalid requests
+Logout
+Session expiration
+Phase 10 — Deployment
+
+Finally:
+
+Localhost
+    ↓
+Online backend
+    ↓
+Online database
+    ↓
+HTTPS
+    ↓
+Public SAP website
