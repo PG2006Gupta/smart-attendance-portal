@@ -740,3 +740,108 @@ footer,
         font-size: 12px;
     }
 }
+
+/* ===== GREY / SECONDARY TEXT READABILITY ===== */
+
+/* Small grey labels, metadata and table text */
+footer,
+.dashboard-footer,
+.remember-label,
+.current-date span,
+.teacher-date span,
+.stat-label,
+.stat-card small,
+.teacher-stat-card span,
+.teacher-stat-card small,
+.subject-info small,
+.overview-info div,
+.section-title p,
+.information-item span,
+.security-item span:first-child,
+.class-time small,
+.class-details span,
+.selected-class-box small,
+.room-info-item span,
+.sap-toast-message,
+.session-info-card span,
+.session-info-grid small,
+.session-info-grid label,
+.live-stat-card span,
+.attendance-table th,
+.attendance-table td,
+.verification-info p,
+.student-session-details span,
+.verification-step-content p,
+.verification-action-note,
+.session-timer-label,
+.history-summary-card span,
+.history-summary-card small,
+.attendance-history-panel-header p,
+.attendance-history-table th,
+.attendance-history-table td,
+.history-profile-info span,
+.teacher-record-summary-card span,
+.teacher-record-summary-card small,
+.teacher-records-panel-header p,
+.teacher-records-table th,
+.teacher-records-table td,
+.teacher-session-summary-card span,
+.teacher-session-students-table th,
+.teacher-session-students-table td,
+.teacher-profile-detail span,
+.teacher-profile-security p,
+.security-note p,
+.session-security-note p,
+.student-attendance-security p,
+.sap-empty-state,
+.sap-device-item small,
+.admin-search-row > label,
+.admin-student-result small,
+.admin-student-result .admin-result-meta,
+.admin-audit-item small {
+    font-size: 15px !important;
+}
+
+/* Larger grey descriptions and page subtitles */
+.login-header p,
+.login-card p,
+.dashboard-welcome p,
+.teacher-welcome p,
+.profile-heading p,
+.teacher-profile-header p,
+.profile-name p,
+.teacher-profile-identity p,
+.card-heading p,
+.teacher-card-heading p,
+.action-content p,
+.teacher-session-banner p,
+.session-header p,
+.attendance-panel-header p,
+.student-attendance-header p,
+.active-session-heading p,
+.verification-header p,
+.attendance-result p,
+.attendance-history-header p,
+.teacher-records-header p,
+.teacher-session-details-header p {
+    font-size: 18px !important;
+}
+
+/* Other small grey interface text */
+.portal-name,
+.portal-label,
+.profile-info small,
+.login-divider,
+.input-wrapper input::placeholder {
+    font-size: 16px !important;
+}
+
+/* Keep the text inside the attendance circle compact */
+.circle-inner span {
+    font-size: 13px !important;
+}
+
+/* Already-large homepage description: slight increase only */
+.hero-content > p {
+    font-size: 20px !important;
+}
