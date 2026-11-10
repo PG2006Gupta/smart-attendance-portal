@@ -1,184 +1,202 @@
-# Smart Attendance Portal (SAP)
+# 🎓 Smart Attendance Portal (SAP)
 
-This is the existing SAP project with PostgreSQL-backed attendance, signed device verification, WebAuthn passkeys, and a separate administrator-controlled device-registration workflow. The original HTML/CSS design and page structure are retained.
+**A Smart, Secure & Location-Based Student Attendance Management System**
 
-## Included functionality
+[🌐 Live Project](https://smart-attendance-portal-7yh1.onrender.com)
 
-- Argon2id password login, protected sessions, role guards, and logout
-- Real WebAuthn/passkey registration and login for students and teachers
-- Teacher class/classroom selection and ten-minute attendance sessions
-- Server-synchronized session countdown and manual session closing
-- Student active-session discovery for enrolled offerings
-- Separate administrator login and device-administration dashboard
-- Administrator-approved, 5–60 minute student device-registration windows
-- Maximum two current attendance devices per student, enforced in a database transaction
-- Automatic registration locking after the second successful device registration
-- Read-only student device lists; students cannot revoke, replace, or reset devices
-- Administrator revocation, registration reset, and window opening/closing with actor, reason, action, and timestamp audit records
-- ECDSA P-256 device keys; private keys are non-extractable and stored in IndexedDB
-- Single-use, two-minute, device-bound attendance challenges
-- Server verification of device signatures, enrollment, session state, GPS timestamp, GPS accuracy, and Haversine classroom distance
-- One attendance record per student/session and request replay protection
-- Automatic absent records when a session closes or expires
-- Three-second live teacher polling with real device/location outcomes
-- Real student/teacher/administrator dashboards, attendance history, session records, and profiles
-- Shared profile dropdown with Profile and Logout actions on every authenticated page
-- Static frontend serving without exposing `.env`, server source, or migrations
+## 📌 About the Project
 
-## Requirements
+**Smart Attendance Portal (SAP)** is a web-based attendance management system designed to modernize the traditional classroom attendance process.
 
-- Node.js 20 or newer
-- PostgreSQL 14 or newer
-- A modern browser with Web Crypto, IndexedDB, Geolocation, and WebAuthn support
-- HTTPS in production; `localhost` is accepted for local browser security features
+The project aims to provide an automated, secure, and convenient way for teachers to manage student attendance while reducing manual work, proxy attendance, and attendance-related errors.
 
-## Update the previous complete SAP installation
+Unlike traditional attendance systems that rely entirely on manual entries or shared QR codes, SAP is designed around student authentication and location-based verification.
 
-These instructions assume the previous installation already executed migrations **001–010**. Do not run those migrations again.
+Students can access the portal using their registered credentials, while teachers can initiate attendance sessions for specific subjects and classrooms.
 
-1. **Back up your project and database.**
-2. Extract this project over the existing SAP files. Keep your real `.env` private and do not replace it with `.env.example`.
-3. Compare `.env.example` with your private `.env` and add any missing non-secret settings. Add a new, strong `SEED_ADMIN_PASSWORD` only when you are ready to seed the administrator.
-4. Install the updated dependencies:
+The system aims to verify whether a student is physically present within the designated classroom area before accepting their attendance.
 
-   ```bash
-   npm install
-   ```
+## 🎯 Problem Statement
 
-5. Run **only migration 011 once**, using the same PostgreSQL user and database as the existing installation:
+Traditional attendance management systems face several challenges:
 
-   ```bash
-   psql -h localhost -U YOUR_DB_USER -d YOUR_DB_NAME -W -f database/migrations/011_admin_controlled_devices.sql
-   ```
+- Manual attendance consumes valuable classroom time.
+- Proxy attendance allows students to mark attendance for others.
+- Paper-based records are difficult to maintain and manage.
+- Shared QR codes can be forwarded to absent students.
+- Managing attendance across multiple classrooms and subjects can become complicated.
+- Lack of real-time attendance monitoring.
 
-   Migration 011 adds the administrator role/profile, registration-window fields, and device-administration audit table. Existing students start **locked**. Their existing current device records are not deleted.
+## 💡 Our Solution
 
-6. Create the separate administrator account. Set these values in your private `.env`:
+Smart Attendance Portal aims to solve these challenges through a centralized digital attendance platform.
 
-   ```text
-   SEED_ADMIN_PASSWORD=use_a_new_strong_password_here
-   SEED_ADMIN_LOGIN_ID=ADM1001
-   SEED_ADMIN_NAME=SAP Administrator
-   SEED_ADMIN_EMAIL=
-   ```
+The system introduces:
 
-   Then run:
+- Secure student and teacher authentication.
+- Location-based attendance verification.
+- Classroom-specific attendance boundaries.
+- Time-limited attendance sessions.
+- Registered-device verification.
+- Automated attendance record management.
 
-   ```bash
-   npm run seed-admin
-   ```
+The main objective is to ensure that attendance is recorded only when the student satisfies the required authentication and classroom-presence conditions.
 
-   `ADM1001` is the default login ID, not a default password. The password is stored only as an Argon2id hash. Use a password different from the student and teacher development passwords. Existing seeded student and teacher credentials remain unchanged.
+## ✨ Key Features
 
-7. Start SAP:
+### 👨‍🎓 1. Student Portal
+- Secure student login.
+- Personalized student profile.
+- Attendance dashboard.
+- Access to attendance-related information.
+- Registered-device-based access restrictions.
 
-   ```bash
-   npm run dev
-   ```
+### 👨‍🏫 2. Teacher Portal
+- Dedicated teacher login.
+- Subject selection.
+- Classroom selection.
+- Start and manage attendance sessions.
+- Monitor student attendance submissions.
 
-8. Open **http://localhost:5000**. Use this same-origin URL consistently to avoid cookie and WebAuthn hostname mismatches.
+### 📍 3. Location-Based Attendance Verification
+- Verify student device location during attendance.
+- Use classroom-specific location boundaries.
+- Compare student device location with the designated classroom area.
+- Accept or reject attendance based on verification conditions.
 
-If upgrading an installation older than the previous complete delivery, apply only its missing migrations in numeric order after taking a backup. Do not repeat migrations that have already run.
+### ⏱️ 4. Time-Limited Attendance Sessions
+- Teachers initiate attendance sessions.
+- Students can submit attendance only during the active session.
+- Designed around a limited attendance window of approximately 10 minutes.
+- Prevents late or unauthorized attendance submissions.
 
-## Fresh installation only
+### 🔐 5. Device Authentication
+- Limit the number of devices associated with a student account.
+- Proposed maximum of two registered devices per student.
+- Reduce unauthorized account sharing.
+- Add another layer of verification alongside student credentials.
 
-For a new empty database:
+### 🚫 6. Anti-Proxy Attendance
+The system aims to reduce proxy attendance through multiple verification layers:
 
-1. Run migrations **001–008** in order with `psql`.
-2. Set private seed passwords in `.env` and run `npm run seed-users`.
-3. Run migrations **009**, **010**, and **011** in order with `psql`.
-4. Set a private administrator seed password and run `npm run seed-admin`.
-5. Run `npm run dev`.
+- Student authentication.
+- Device verification.
+- Classroom location verification.
+- Teacher-controlled attendance sessions.
+- Time-restricted attendance submission.
 
-Migration 009 assigns the seeded student/teacher to class offerings, so `npm run seed-users` must run before 009. No real seed password is included in this project.
+## ⚙️ How It Works
 
-## Administrator-controlled device workflow
+### Student Workflow
 
-1. Log in through **Administrator Portal**.
-2. Search for a student by name or student ID and select the record.
-3. Enter an administrative reason and choose a registration-window duration.
-4. Select **Open Registration Window**. If two current devices already exist, revoke one first or use **Revoke All Devices & Start Again**.
-5. During the open window, the student can register available device slots from **Student Profile → Attendance Devices** or the attendance page.
-6. Register at most two devices, each from its own normal browser/browser profile. The second successful registration automatically closes further registration and locks the window. Expiry also prevents further registration.
-7. Outside an approved window, registration controls are unavailable and the student device list is read-only. Students have no Revoke, Replace, or Reset control; the legacy student revoke API explicitly returns `403`.
-8. Later device changes require an administrator action and a new reason. The administrator dashboard displays the audit actor, action, reason, device where applicable, and timestamp.
+1. Student opens the Smart Attendance Portal.
+2. Logs in using registered credentials.
+3. Accesses the student dashboard.
+4. Checks for an active attendance session.
+5. Submits attendance during the permitted time window.
+6. The system performs the required verification checks.
+7. Attendance is accepted or rejected based on the verification result.
 
-Opening a window does **not** remove existing devices. **Revoke All Devices & Start Again** explicitly revokes all current devices and opens a new window. Revoked records remain visible to the administrator for history; they no longer count toward the two-current-device limit and cannot mark attendance.
+### Teacher Workflow
 
-Do not use incognito for persistent registration. Its IndexedDB private key is normally erased when the incognito session closes, while the server-side registration can remain. Use normal separate browser profiles instead.
+1. Teacher logs into the teacher portal.
+2. Selects the subject.
+3. Enters or selects the classroom number.
+4. The system uses the classroom-specific verification range.
+5. Teacher starts the attendance session.
+6. Student submissions are checked against the required conditions.
+7. Attendance records are maintained for management and monitoring.
 
-## Normal attendance workflow
+## 🏗️ System Architecture
 
-1. Ensure the student has an active registered device through the administrator-controlled workflow above.
-2. Log in to the Teacher Portal.
-3. Select a class and manually select a classroom.
-4. Start the ten-minute session.
-5. In the student's registered browser, open **Mark Attendance**, allow GPS access, and select **Verify & Mark Attendance**.
-6. The server checks the active session, enrollment, registered device, expiring single-use challenge signature, request uniqueness, GPS freshness/accuracy, and classroom distance. A QR code or device registration alone is never treated as sufficient attendance proof.
-7. The teacher page updates with the server-verified result. Device registration by itself leaves the teacher at **Not checked** until an attendance attempt occurs.
-8. Closing or expiring the session creates absent records for enrolled students who did not mark attendance.
+The proposed system follows a client-server architecture.
 
-## Classroom coordinates
+**Frontend Layer**
+- Student login interface.
+- Teacher login interface.
+- Student dashboard.
+- Teacher dashboard.
+- Attendance management interface.
 
-The seed deliberately does **not** invent campus coordinates. Until real coordinates are deliberately configured, a valid device attempt is rejected with `classroom_not_configured`; it does not create a Present record.
+**Backend Layer**
+- User authentication.
+- Attendance session management.
+- Student and teacher verification.
+- Location validation.
+- Attendance processing.
 
-After measuring and reviewing a classroom location, update it using SQL similar to this example. Replace every placeholder first:
+**Database Layer**
+- Student information.
+- Teacher information.
+- Subject records.
+- Classroom information.
+- Attendance records.
+- Registered device information.
 
-```sql
-UPDATE classrooms
-SET
-    latitude = REPLACE_WITH_MEASURED_LATITUDE,
-    longitude = REPLACE_WITH_MEASURED_LONGITUDE,
-    coordinates_verified = TRUE,
-    max_accuracy_meters = 100,
-    updated_at = NOW()
-WHERE code = 'CSE-201';
-```
+## 🛠️ Technology Stack
 
-Repeat for other classrooms and choose accuracy limits through field testing. The classroom radii remain 20, 25, 30, and 35 metres. GPS cannot reliably verify an exact floor or altitude in this application; no floor/altitude enforcement is claimed.
+The architecture is designed around the following technologies and capabilities:
 
-## Passkeys
+| Technology | Purpose |
+|---|---|
+| HTML5 | Frontend structure |
+| CSS3 | Responsive user interface |
+| JavaScript | Frontend interactions |
+| Backend Framework | Server-side processing |
+| Database | Student, teacher and attendance records |
+| Geolocation API | Device location verification |
+| Authentication | Secure account access |
 
-- Register a passkey while logged in through **Student Profile** or **Teacher Profile**.
-- Use **Login with Passkey** on the corresponding login page.
-- Registration creates a discoverable credential with user verification required.
-- Local development should use `localhost`, not a mixture of `localhost` and `127.0.0.1`.
-- In production, set `WEBAUTHN_RP_ID` to your domain and `WEBAUTHN_ORIGINS` to the exact HTTPS frontend origin.
+*Update the technology table to match the exact backend framework and database used in your deployed version.*
 
-Password login remains available when no passkey is registered. The separate administrator currently uses password login.
+## 🔒 Security & Verification Approach
 
-## Validation commands
+SAP focuses on reducing attendance manipulation through multiple verification layers.
 
-```bash
-npm run check   # JavaScript syntax, HTML IDs, and local file references
-npm test        # Haversine, device signatures, challenges, and device-window policy tests
-npm audit       # Dependency vulnerability report
-```
+| Security Layer | Purpose |
+|---|---|
+| Student Authentication | Verify student identity |
+| Teacher Authentication | Restrict attendance session creation |
+| Device Restriction | Reduce account sharing |
+| Location Verification | Check classroom presence |
+| Session Time Limit | Prevent late submissions |
+| Classroom-Specific Range | Apply different verification boundaries to classrooms |
 
-The project was also exercised against a fresh PostgreSQL database after migrations 001–011. API checks covered role isolation, initial locking, administrator window open/close, two-device automatic locking, denied student revocation, administrator revoke/reset, audit records, accepted/rejected attendance, replay protection, `classroom_not_configured`, final absence records, dashboards, and records. Browser checks used two separate browser profiles and covered administrator reset, student read-only controls, automatic locking, virtual WebAuthn registration/login, device-signed GPS attendance, live teacher updates, and session closing. A separate navigation suite verified Profile/Logout dropdowns and real logout on every authenticated student, teacher, and administrator page.
+**Important:** Location verification is designed as an additional presence check, not as absolute proof of physical presence. Actual implementation may require additional safeguards against GPS spoofing and device manipulation.
 
-For accepted-attendance tests, coordinates were deliberately configured only in the disposable test database. The delivered classroom seed remains unconfigured.
+## 🚀 Future Scope
 
-## Production configuration
+The project can be extended with several advanced features:
 
-Use the same Express origin for frontend and API where possible. Set:
+- Biometric authentication integration.
+- Bluetooth Low Energy (BLE) proximity verification.
+- NFC-based classroom verification.
+- Real-time teacher attendance monitoring.
+- Advanced analytics and attendance reports.
+- Automatic shortage-of-attendance notifications.
+- Parent and student notification systems.
+- Integration with university ERP systems.
+- AI-based attendance anomaly detection.
+- Advanced device and location fraud detection.
 
-```text
-NODE_ENV=production
-FRONTEND_URLS=https://attendance.example.edu
-WEBAUTHN_RP_ID=attendance.example.edu
-WEBAUTHN_ORIGINS=https://attendance.example.edu
-DB_SSL=true
-```
+## 🎓 Academic Project
 
-Use your provider's real hostname and database SSL requirements. Keep `DB_SSL_REJECT_UNAUTHORIZED=true` unless your provider explicitly requires a different setting. Deploy behind HTTPS and a trusted reverse proxy. Never upload, commit, or include a real `.env` in an archive.
+**Project Name:** Smart Attendance Portal (SAP)
 
-## Security boundaries
+**Project Category:** Full-Stack Web Development / Smart Campus Technology
 
-- GPS is imprecise and can be spoofed. The server checks accuracy, freshness, and distance, but no web application can guarantee physical presence from GPS alone.
-- Device signatures prove possession of a registered private key; they do not prove that the key's owner is physically present.
-- An administrator-approved self-registration window does **not**, by itself, prevent proxy attendance. A student could still share an account, a registered browser, or a device. Use appropriate institutional supervision and additional controls where required.
-- Passkeys provide strong account authentication but do not independently prove classroom location.
-- Raw student GPS coordinates are not stored in `verification_attempts`; only calculated distance, accuracy, timestamp, and outcome are stored.
-- Teacher-device proximity, Bluetooth/NFC, network attestation, hardware-backed device attestation, and stronger anti-spoofing controls would require additional infrastructure and field testing.
-- There is no timetable table in the current schema. Dashboard class lists therefore show assigned offerings and sessions actually started, not invented scheduled times.
+**Project Objective:** To develop a secure and automated attendance management system that reduces proxy attendance and simplifies classroom attendance operations.
+
+The project demonstrates the practical application of web development, authentication systems, database management, and location-based verification technologies.
+
+## 🌍 Our Vision
+
+We believe attendance management should be smart, transparent, and reliable.
+
+Smart Attendance Portal aims to reduce administrative workload, improve classroom accountability, and create a more efficient digital attendance ecosystem for educational institutions.
+
+**Smarter Attendance. Stronger Verification. Better Campus Management.**
+
+---
+
+⭐ If you find this project interesting, consider giving the repository a star!
