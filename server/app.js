@@ -83,6 +83,17 @@ if (process.env.NODE_ENV === "production") {
     app.set("trust proxy", 1);
 }
 
+// Hosted previews and embedding services show the portal inside an iframe.
+// Clickjacking protection is still on: framing is denied everywhere unless
+// FRAME_ANCESTORS explicitly lists the parents that may embed the portal.
+// Leave it unset in production to keep frame-ancestors 'none'.
+const frameAncestors = (
+    process.env.FRAME_ANCESTORS || ""
+)
+    .split(",")
+    .map((origin) => origin.trim())
+    .filter(Boolean);
+
 app.use(
     helmet({
         contentSecurityPolicy: {
@@ -96,9 +107,14 @@ app.use(
                 connectSrc: ["'self'"],
                 objectSrc: ["'none'"],
                 baseUri: ["'self'"],
-                frameAncestors: ["'none'"]
+                frameAncestors:
+                    frameAncestors.length > 0 ? frameAncestors : ["'none'"]
             }
-        }
+        },
+        // The older header must agree with the CSP directive.
+        frameguard: frameAncestors.length > 0
+            ? false
+            : { action: "deny" }
     })
 );
 
