@@ -212,17 +212,21 @@ All students share `SEED_STUDENT_PASSWORD` and all teachers share `SEED_TEACHER_
 
 ### Demo teaching structure
 
-| Section | Subject | Teacher | Students |
+Every teacher teaches **two subjects** to their **own group of students** in section 311/B.
+
+| Teacher | Subjects | Students | Count |
 |---|---|---|---|
-| 311/B | DBMS | Teacher 1 | Students 1-8 |
-| 311/B | JAVA | Teacher 2 | Students 1-8 |
-| 311/B | COA | Teacher 3 | Students 1-8 |
-| 311/B | DSA | Teacher 4 | Students 1-8 |
-| 312/A | DBMS | Teacher 4 | Students 9-10 |
+| Teacher 1 | DBMS, JAVA | Students 1-4 | 4 |
+| Teacher 2 | COA, DSA | Students 5-7 | 3 |
+| Teacher 3 | DBMS, MATH | Students 8-9 | 2 |
+| Teacher 4 | DSA, MATH | Student 10 | 1 |
 
-Students 1-8 take every subject in section 311/B. Students 9 and 10 take a single DBMS class in section 312/A, which is useful for demonstrating a session with a small expected count.
+Each student therefore takes two subjects, both taught by their own teacher. The groups are uneven (4 + 3 + 2 + 1 = 10) so class sizes of 4, 3, 2, and 1 can all be demonstrated. DBMS, DSA, and MATH are each taught by two different teachers, which is allowed because a class offering is unique per subject, section, and teacher.
 
-The cohort is defined in `database/demo-cohort.js`. Accounts are created by `npm run seed-users` because passwords are Argon2id hashes, which SQL cannot produce. Class offerings and enrollments live in `database/migrations/013_seed_demo_cohort.sql`, which also removes the earlier `CU123456` and `TCH1001` demo accounts and everything that depended on them.
+The cohort is defined in `database/demo-cohort.js`. Accounts are created by `npm run seed-users` because passwords are Argon2id hashes, which SQL cannot produce. The teaching structure lives in SQL:
+
+- `013_seed_demo_cohort.sql` removes the earlier `CU123456` and `TCH1001` demo accounts and everything that depended on them.
+- `014_regroup_demo_teaching.sql` builds the current timetable and student groups above.
 
 ### 5. Start the portal
 

@@ -17,40 +17,32 @@ export const SECTION = {
     academicYear: "2026-2027"
 };
 
-// Second section, so a smaller class can be timetabled alongside the main
-// one. Class offerings are unique per (subject, section, teacher).
-export const SECONDARY_SECTION = {
-    name: "312/A",
-    course: "B.E. Information Technology",
-    semester: 1,
-    academicYear: "2026-2027"
-};
-
 export const DEPARTMENT = "Computer Science & Engineering";
 
-// Students 1-8 are enrolled in every subject. Students 9 and 10 share the
-// second section with teacher 4, which makes a smaller class to demonstrate
-// a session with only a few expected students.
+// Each teacher owns a group of students and teaches both of their subjects
+// to that group. The group sizes are uneven on purpose (4 + 3 + 2 + 1 = 10)
+// so sessions with different expected counts can be demonstrated.
 export const DEMO_STUDENTS = [
-    { number: 1, loginId: "CU230101", fullName: "Student 1", subjects: "all", section: "main" },
-    { number: 2, loginId: "CU230102", fullName: "Student 2", subjects: "all", section: "main" },
-    { number: 3, loginId: "CU230103", fullName: "Student 3", subjects: "all", section: "main" },
-    { number: 4, loginId: "CU230104", fullName: "Student 4", subjects: "all", section: "main" },
-    { number: 5, loginId: "CU230105", fullName: "Student 5", subjects: "all", section: "main" },
-    { number: 6, loginId: "CU230106", fullName: "Student 6", subjects: "all", section: "main" },
-    { number: 7, loginId: "CU230107", fullName: "Student 7", subjects: "all", section: "main" },
-    { number: 8, loginId: "CU230108", fullName: "Student 8", subjects: "all", section: "main" },
-    { number: 9, loginId: "CU230109", fullName: "Student 9", subjects: "secondary", section: "secondary" },
-    { number: 10, loginId: "CU230110", fullName: "Student 10", subjects: "secondary", section: "secondary" }
+    { number: 1, loginId: "CU230101", fullName: "Student 1", teacher: "TCH2001" },
+    { number: 2, loginId: "CU230102", fullName: "Student 2", teacher: "TCH2001" },
+    { number: 3, loginId: "CU230103", fullName: "Student 3", teacher: "TCH2001" },
+    { number: 4, loginId: "CU230104", fullName: "Student 4", teacher: "TCH2001" },
+    { number: 5, loginId: "CU230105", fullName: "Student 5", teacher: "TCH2002" },
+    { number: 6, loginId: "CU230106", fullName: "Student 6", teacher: "TCH2002" },
+    { number: 7, loginId: "CU230107", fullName: "Student 7", teacher: "TCH2002" },
+    { number: 8, loginId: "CU230108", fullName: "Student 8", teacher: "TCH2003" },
+    { number: 9, loginId: "CU230109", fullName: "Student 9", teacher: "TCH2003" },
+    { number: 10, loginId: "CU230110", fullName: "Student 10", teacher: "TCH2004" }
 ];
 
-// Each teacher takes one of the main subjects in the main section. Teacher 4
-// also takes DBMS in the second section, so students 9 and 10 have a class.
+// Every teacher teaches exactly two subjects. DBMS, DSA, and MATH are each
+// shared by two teachers; JAVA and COA are taught by one. Offerings are
+// unique per (subject, section, teacher), so sharing a subject is allowed.
 export const DEMO_TEACHERS = [
-    { number: 1, loginId: "TCH2001", fullName: "Teacher 1", subjects: ["DBMS"], sections: ["main"] },
-    { number: 2, loginId: "TCH2002", fullName: "Teacher 2", subjects: ["JAVA"], sections: ["main"] },
-    { number: 3, loginId: "TCH2003", fullName: "Teacher 3", subjects: ["COA"], sections: ["main"] },
-    { number: 4, loginId: "TCH2004", fullName: "Teacher 4", subjects: ["DSA"], sections: ["main", "secondary"] }
+    { number: 1, loginId: "TCH2001", fullName: "Teacher 1", subjects: ["DBMS", "JAVA"] },
+    { number: 2, loginId: "TCH2002", fullName: "Teacher 2", subjects: ["COA", "DSA"] },
+    { number: 3, loginId: "TCH2003", fullName: "Teacher 3", subjects: ["DBMS", "MATH"] },
+    { number: 4, loginId: "TCH2004", fullName: "Teacher 4", subjects: ["DSA", "MATH"] }
 ];
 
 // Accounts created by the previous demo seed. They are removed by migration

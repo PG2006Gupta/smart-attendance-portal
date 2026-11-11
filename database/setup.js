@@ -27,8 +27,9 @@ const migrationsDirectory = path.resolve(
 );
 
 // Seeds that reference the demo accounts created by seed-users. Migration
-// 013 also removes the original single-student demo accounts.
-const accountDependentSeeds = ["009", "013"];
+// 013 removes the original single-student demo accounts, and 014 rebuilds
+// the demo timetable and student groups.
+const accountDependentSeeds = ["009", "013", "014"];
 
 async function findSeedFiles(prefixes) {
     const entries = (await fs.readdir(migrationsDirectory))
