@@ -186,15 +186,43 @@ npm install
 npm run db:setup
 ```
 
-`db:setup` applies every migration in order, creates the demo student and teacher, then the administrator. It is safe to repeat.
+`db:setup` applies every migration in order, creates the demo cohort, then the administrator. It is safe to repeat.
 
 Demo accounts it creates:
 
-| Role | Login ID | Password |
-|---|---|---|
-| Student | `CU123456` | `SEED_STUDENT_PASSWORD` |
-| Teacher | `TCH1001` | `SEED_TEACHER_PASSWORD` |
-| Administrator | `ADM1001` | `SEED_ADMIN_PASSWORD` |
+| Role | Name | Login ID | Password |
+|---|---|---|---|
+| Student | Student 1 | `CU230101` | `SEED_STUDENT_PASSWORD` |
+| Student | Student 2 | `CU230102` | `SEED_STUDENT_PASSWORD` |
+| Student | Student 3 | `CU230103` | `SEED_STUDENT_PASSWORD` |
+| Student | Student 4 | `CU230104` | `SEED_STUDENT_PASSWORD` |
+| Student | Student 5 | `CU230105` | `SEED_STUDENT_PASSWORD` |
+| Student | Student 6 | `CU230106` | `SEED_STUDENT_PASSWORD` |
+| Student | Student 7 | `CU230107` | `SEED_STUDENT_PASSWORD` |
+| Student | Student 8 | `CU230108` | `SEED_STUDENT_PASSWORD` |
+| Student | Student 9 | `CU230109` | `SEED_STUDENT_PASSWORD` |
+| Student | Student 10 | `CU230110` | `SEED_STUDENT_PASSWORD` |
+| Teacher | Teacher 1 | `TCH2001` | `SEED_TEACHER_PASSWORD` |
+| Teacher | Teacher 2 | `TCH2002` | `SEED_TEACHER_PASSWORD` |
+| Teacher | Teacher 3 | `TCH2003` | `SEED_TEACHER_PASSWORD` |
+| Teacher | Teacher 4 | `TCH2004` | `SEED_TEACHER_PASSWORD` |
+| Administrator | SAP Administrator | `ADM1001` | `SEED_ADMIN_PASSWORD` |
+
+All students share `SEED_STUDENT_PASSWORD` and all teachers share `SEED_TEACHER_PASSWORD`, so a demo needs three passwords rather than fifteen.
+
+### Demo teaching structure
+
+| Section | Subject | Teacher | Students |
+|---|---|---|---|
+| 311/B | DBMS | Teacher 1 | Students 1-8 |
+| 311/B | JAVA | Teacher 2 | Students 1-8 |
+| 311/B | COA | Teacher 3 | Students 1-8 |
+| 311/B | DSA | Teacher 4 | Students 1-8 |
+| 312/A | DBMS | Teacher 4 | Students 9-10 |
+
+Students 1-8 take every subject in section 311/B. Students 9 and 10 take a single DBMS class in section 312/A, which is useful for demonstrating a session with a small expected count.
+
+The cohort is defined in `database/demo-cohort.js`. Accounts are created by `npm run seed-users` because passwords are Argon2id hashes, which SQL cannot produce. Class offerings and enrollments live in `database/migrations/013_seed_demo_cohort.sql`, which also removes the earlier `CU123456` and `TCH1001` demo accounts and everything that depended on them.
 
 ### 5. Start the portal
 
