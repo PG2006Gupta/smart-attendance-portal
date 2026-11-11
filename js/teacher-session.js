@@ -74,7 +74,12 @@ async function loadTeacherAttendanceSession() {
         setTeacherSessionText("sessionClassroom", session.classroom_code);
         setTeacherSessionText(
             "sessionRadius",
-            `${session.radius_meters} meters`
+            `${Number(session.radius_meters)} meters`
+        );
+        setTeacherSessionText(
+            "sessionRangeSummary",
+            session.radius_description ||
+                `Accuracy limit ${session.max_accuracy_meters} m`
         );
         setTeacherSessionText(
             "sessionExpectedStudents",
@@ -89,6 +94,10 @@ async function loadTeacherAttendanceSession() {
             badge.textContent = session.coordinates_verified
                 ? "Location Verification Ready"
                 : "Classroom Coordinates Required";
+            badge.classList.toggle(
+                "sap-warning-text",
+                !session.coordinates_verified
+            );
         }
 
         updateTeacherSessionStatus(session.status);

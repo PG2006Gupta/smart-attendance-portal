@@ -7,6 +7,9 @@
     "test": "node --test tests/*.test.js",
     "dev": "node --watch server/index.js",
     "start": "node server/index.js",
+    "db:setup": "node database/setup.js",
+    "migrate": "node database/migrate.js",
+    "db:status": "node database/migrate.js --status",
     "seed-users": "node database/seed-users.js",
     "seed-admin": "node database/seed-admin.js",
     "check": "node scripts/check.js"

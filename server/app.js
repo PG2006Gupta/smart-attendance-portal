@@ -39,6 +39,44 @@ const allowedOrigins = (
     .map((origin) => origin.trim())
     .filter(Boolean);
 
+// Hosted previews and tunnels serve the portal from a generated hostname
+// such as https://5000-abcdef.e2b.app, which cannot be listed in .env ahead
+// of time. FRONTEND_ORIGIN_PATTERNS accepts those hosts by suffix, so a
+// portal served with credentials on the same host keeps working without
+// listing every generated subdomain. Each accepted origin is logged.
+const allowedOriginPatterns = (
+    process.env.FRONTEND_ORIGIN_PATTERNS || ""
+)
+    .split(",")
+    .map((pattern) => pattern.trim().toLowerCase())
+    .filter(Boolean)
+    .map((pattern) => (pattern.startsWith("*.") ? pattern.slice(1) : pattern));
+
+function matchesOriginPattern(origin) {
+    let url;
+
+    try {
+        url = new URL(origin);
+    } catch {
+        return false;
+    }
+
+    const host = url.host.toLowerCase();
+
+    return allowedOriginPatterns.some(
+        (suffix) => host === suffix.slice(1) || host.endsWith(suffix)
+    );
+}
+
+function isAllowedOrigin(origin) {
+    if (allowedOrigins.includes(origin)) return true;
+
+    if (!matchesOriginPattern(origin)) return false;
+
+    console.log(`Accepted preview origin: ${origin}`);
+    return true;
+}
+
 app.disable("x-powered-by");
 
 if (process.env.NODE_ENV === "production") {
@@ -67,7 +105,7 @@ app.use(
 app.use(
     cors({
         origin(origin, callback) {
-            if (!origin || allowedOrigins.includes(origin)) {
+            if (!origin || isAllowedOrigin(origin)) {
                 callback(null, true);
                 return;
             }

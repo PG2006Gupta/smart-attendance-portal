@@ -1,8 +1,26 @@
 import "dotenv/config";
+
 import argon2 from "argon2";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
 import pool from "../server/config/db.js";
 
-async function seedUsers() {
+export const DEMO_STUDENT = {
+    loginId: "CU123456",
+    studentNumber: "CU123456",
+    fullName: "Pragun"
+};
+
+export const DEMO_TEACHER = {
+    loginId: "TCH1001",
+    teacherNumber: "TCH1001",
+    fullName: "Teacher",
+    department: "Computer Science & Engineering",
+    email: "teacher@sap.edu"
+};
+
+function readSeedPasswords() {
     const studentPassword = process.env.SEED_STUDENT_PASSWORD;
     const teacherPassword = process.env.SEED_TEACHER_PASSWORD;
 
@@ -23,6 +41,12 @@ async function seedUsers() {
             "Student and teacher development passwords must be different."
         );
     }
+
+    return { studentPassword, teacherPassword };
+}
+
+export async function seedUsers({ logger = console } = {}) {
+    const { studentPassword, teacherPassword } = readSeedPasswords();
 
     // Hash before opening the database transaction
     const [studentPasswordHash, teacherPasswordHash] = await Promise.all([
@@ -58,7 +82,7 @@ async function seedUsers() {
                 updated_at = NOW()
             RETURNING id
             `,
-            ["CU123456", studentPasswordHash]
+            [DEMO_STUDENT.loginId, studentPasswordHash]
         );
 
         const studentUserId = studentUserResult.rows[0].id;
@@ -77,7 +101,7 @@ async function seedUsers() {
                 full_name = EXCLUDED.full_name,
                 updated_at = NOW()
             `,
-            [studentUserId, "CU123456", "Pragun"]
+            [studentUserId, DEMO_STUDENT.studentNumber, DEMO_STUDENT.fullName]
         );
 
         // ================= TEACHER USER =================
@@ -98,7 +122,7 @@ async function seedUsers() {
                 updated_at = NOW()
             RETURNING id
             `,
-            ["TCH1001", teacherPasswordHash]
+            [DEMO_TEACHER.loginId, teacherPasswordHash]
         );
 
         const teacherUserId = teacherUserResult.rows[0].id;
@@ -123,19 +147,23 @@ async function seedUsers() {
             `,
             [
                 teacherUserId,
-                "TCH1001",
-                "Teacher",
-                "Computer Science & Engineering",
-                "teacher@sap.edu"
+                DEMO_TEACHER.teacherNumber,
+                DEMO_TEACHER.fullName,
+                DEMO_TEACHER.department,
+                DEMO_TEACHER.email
             ]
         );
 
         await client.query("COMMIT");
 
-        console.log("Student account ready: CU123456");
-        console.log("Teacher account ready: TCH1001");
-        console.log("Passwords were stored only as Argon2id hashes.");
+        logger.log(`Student account ready: ${DEMO_STUDENT.loginId}`);
+        logger.log(`Teacher account ready: ${DEMO_TEACHER.loginId}`);
+        logger.log("Passwords were stored only as Argon2id hashes.");
 
+        return {
+            studentUserId,
+            teacherUserId
+        };
     } catch (error) {
         await client.query("ROLLBACK");
         throw error;
@@ -144,12 +172,18 @@ async function seedUsers() {
     }
 }
 
-seedUsers()
-    .catch((error) => {
-        console.error("User seeding failed:");
-        console.error(error.message);
-        process.exitCode = 1;
-    })
-    .finally(async () => {
-        await pool.end();
-    });
+const isMainModule =
+    process.argv[1] !== undefined &&
+    path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
+
+if (isMainModule) {
+    seedUsers()
+        .catch((error) => {
+            console.error("User seeding failed:");
+            console.error(error.message);
+            process.exitCode = 1;
+        })
+        .finally(async () => {
+            await pool.end();
+        });
+}

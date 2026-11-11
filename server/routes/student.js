@@ -9,11 +9,16 @@ import {
     shouldLockRegistrationAfterDevice
 } from "../services/device-policy.js";
 import {
-    calculateDistanceMeters,
     createDeviceChallenge,
     validateDevicePublicKey,
     verifyDeviceSignature
 } from "../services/verification.js";
+import {
+    describeRange,
+    evaluateAttendanceRange,
+    formatDistanceMeters,
+    measureClassroomDistance
+} from "../services/attendance-range.js";
 
 const router = Router();
 
@@ -67,6 +72,11 @@ async function getActiveSessions(studentId) {
             classrooms.radius_meters,
             classrooms.max_accuracy_meters,
             classrooms.coordinates_verified,
+            (
+                classrooms.coordinates_verified = TRUE
+                AND classrooms.latitude IS NOT NULL
+                AND classrooms.longitude IS NOT NULL
+            ) AS classroom_ready,
             attendance_records.status AS attendance_status,
             attendance_records.marked_at,
             NOW() AS server_time
@@ -188,10 +198,14 @@ router.get("/dashboard", async (request, response, next) => {
 router.get("/sessions/active", async (request, response, next) => {
     try {
         const sessions = await getActiveSessions(request.session.user.id);
+        const presented = sessions.map((session) => ({
+            ...session,
+            radius_description: describeRange(session)
+        }));
 
         response.json({
-            sessions,
-            session: sessions[0] || null,
+            sessions: presented,
+            session: presented[0] || null,
             serverTime: sessions[0]?.server_time || new Date().toISOString()
         });
     } catch (error) {
@@ -694,20 +708,10 @@ router.post("/attendance/mark", attendanceLimiter, async (request, response, nex
 
         const attendanceSession = sessionResult.rows[0];
         const capturedAt = new Date(location.capturedAt);
-        let distanceMeters = null;
-
-        if (
-            attendanceSession.coordinates_verified &&
-            attendanceSession.latitude !== null &&
-            attendanceSession.longitude !== null
-        ) {
-            distanceMeters = calculateDistanceMeters(
-                location.latitude,
-                location.longitude,
-                Number(attendanceSession.latitude),
-                Number(attendanceSession.longitude)
-            );
-        }
+        const distanceMeters = measureClassroomDistance(
+            attendanceSession,
+            location
+        );
 
         async function rejectAttempt({
             status = 403,
@@ -756,9 +760,7 @@ router.post("/attendance/mark", attendanceLimiter, async (request, response, nex
                 code,
                 deviceVerified,
                 locationVerified,
-                distanceMeters: distanceMeters === null
-                    ? null
-                    : Number(distanceMeters.toFixed(1)),
+                distanceMeters: formatDistanceMeters(distanceMeters),
                 radiusMeters: Number(attendanceSession.radius_meters)
             });
         }
@@ -840,27 +842,23 @@ router.post("/attendance/mark", attendanceLimiter, async (request, response, nex
             });
         }
 
-        const maximumAccuracy = Number(
-            attendanceSession.max_accuracy_meters
-        );
+        const rangeDecision = evaluateAttendanceRange({
+            classroom: attendanceSession,
+            location,
+            distanceMeters
+        });
 
-        if (location.accuracy > maximumAccuracy) {
+        if (!rangeDecision.accepted) {
+            // The classroom-not-configured case is checked earlier so that
+            // it keeps its distinct HTTP status.
             return rejectAttempt({
-                code: "location_accuracy_too_low",
-                message: `Your location accuracy is about ${Math.round(location.accuracy)} metres; this classroom requires ${maximumAccuracy} metres or better.`,
+                code: rangeDecision.code,
+                message: rangeDecision.message,
                 deviceVerified: true
             });
         }
 
-        const radiusMeters = Number(attendanceSession.radius_meters);
-
-        if (distanceMeters > radiusMeters) {
-            return rejectAttempt({
-                code: "outside_classroom",
-                message: `You appear to be about ${Math.round(distanceMeters)} metres from the classroom, outside its ${radiusMeters}-metre attendance range.`,
-                deviceVerified: true
-            });
-        }
+        const radiusMeters = rangeDecision.radiusMeters;
 
         const acceptedAttempt = await client.query(
             `
@@ -913,7 +911,7 @@ router.post("/attendance/mark", attendanceLimiter, async (request, response, nex
         response.status(201).json({
             message: "Attendance marked successfully.",
             attendance: attendance.rows[0],
-            distanceMeters: Number(distanceMeters.toFixed(1)),
+            distanceMeters: formatDistanceMeters(distanceMeters),
             radiusMeters
         });
     } catch (error) {

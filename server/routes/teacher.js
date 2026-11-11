@@ -2,6 +2,7 @@ import { Router } from "express";
 import { z } from "zod";
 import pool from "../config/db.js";
 import { requireRole } from "../middleware/requireRole.js";
+import { describeRange } from "../services/attendance-range.js";
 import { finalizeSession } from "../services/session-finalization.js";
 
 const router = Router();
@@ -68,14 +69,28 @@ router.get("/classrooms", async (request, response, next) => {
                 building,
                 radius_meters,
                 max_accuracy_meters,
-                coordinates_verified
+                coordinates_verified,
+                (
+                    coordinates_verified = TRUE
+                    AND latitude IS NOT NULL
+                    AND longitude IS NOT NULL
+                ) AS range_ready
             FROM classrooms
             WHERE is_active = TRUE
             ORDER BY code
             `
         );
 
-        response.json({ classrooms: result.rows });
+        response.json({
+            classrooms: result.rows.map((classroom) => ({
+                ...classroom,
+                radius_meters: Number(classroom.radius_meters),
+                max_accuracy_meters: Number(
+                    classroom.max_accuracy_meters
+                ),
+                radius_description: describeRange(classroom)
+            }))
+        });
     } catch (error) {
         next(error);
     }
@@ -477,6 +492,11 @@ router.get("/sessions/:sessionId", async (request, response, next) => {
                 classrooms.radius_meters,
                 classrooms.max_accuracy_meters,
                 classrooms.coordinates_verified,
+                (
+                    classrooms.coordinates_verified = TRUE
+                    AND classrooms.latitude IS NOT NULL
+                    AND classrooms.longitude IS NOT NULL
+                ) AS range_ready,
                 teachers.full_name AS teacher_name,
                 (
                     SELECT COUNT(*)
@@ -516,7 +536,12 @@ router.get("/sessions/:sessionId", async (request, response, next) => {
         const session = result.rows[0];
 
         response.json({
-            session,
+            session: {
+                ...session,
+                radius_meters: Number(session.radius_meters),
+                max_accuracy_meters: Number(session.max_accuracy_meters),
+                radius_description: describeRange(session)
+            },
             serverTime: session.server_time
         });
     } catch (error) {
