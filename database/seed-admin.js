@@ -1,8 +1,12 @@
 import "dotenv/config";
+
 import argon2 from "argon2";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
 import pool from "../server/config/db.js";
 
-async function seedAdministrator() {
+export async function seedAdministrator({ logger = console } = {}) {
     const password = process.env.SEED_ADMIN_PASSWORD;
     const loginId = (
         process.env.SEED_ADMIN_LOGIN_ID || "ADM1001"
@@ -69,8 +73,10 @@ async function seedAdministrator() {
         );
 
         await client.query("COMMIT");
-        console.log(`Administrator account ready: ${loginId}`);
-        console.log("The password was stored only as an Argon2id hash.");
+        logger.log(`Administrator account ready: ${loginId}`);
+        logger.log("The password was stored only as an Argon2id hash.");
+
+        return { administratorUserId: userResult.rows[0].id, loginId };
     } catch (error) {
         await client.query("ROLLBACK");
         throw error;
@@ -79,12 +85,18 @@ async function seedAdministrator() {
     }
 }
 
-seedAdministrator()
-    .catch((error) => {
-        console.error("Administrator seeding failed:");
-        console.error(error.message);
-        process.exitCode = 1;
-    })
-    .finally(async () => {
-        await pool.end();
-    });
+const isMainModule =
+    process.argv[1] !== undefined &&
+    path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
+
+if (isMainModule) {
+    seedAdministrator()
+        .catch((error) => {
+            console.error("Administrator seeding failed:");
+            console.error(error.message);
+            process.exitCode = 1;
+        })
+        .finally(async () => {
+            await pool.end();
+        });
+}

@@ -476,7 +476,7 @@ function updateRoomDetails() {
 
     sapSetText(
         "roomRadius",
-        classroom ? `${classroom.radius_meters} meters` : "—"
+        classroom ? `${Number(classroom.radius_meters)} meters` : "—"
     );
 
     sapSetText(
@@ -486,6 +486,20 @@ function updateRoomDetails() {
                 ? "Coordinates verified"
                 : "Coordinates not configured"
             : "—"
+    );
+
+    const statusElement = document.getElementById("roomLocationStatus");
+    const ready = Boolean(classroom?.coordinates_verified);
+
+    statusElement?.classList.toggle("sap-warning-text", Boolean(classroom) && !ready);
+
+    sapSetText(
+        "roomRangeSummary",
+        classroom
+            ? classroom.radius_description ||
+                `${Number(classroom.radius_meters)} m radius • ` +
+                `${Number(classroom.max_accuracy_meters)} m accuracy limit`
+            : "Select a classroom to see its attendance range."
     );
 }
 

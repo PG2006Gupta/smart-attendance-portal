@@ -149,6 +149,7 @@ function renderStudentAttendanceSession(session) {
         sapSetText("studentSessionSection", "Your teacher has not started an attendance session for your enrolled classes.");
         sapSetText("studentSessionClassroom", "—");
         sapSetText("studentSessionRadius", "—");
+        sapSetText("studentSessionRangeSummary", "—");
         sapSetText("studentSessionTeacher", "—");
         sapSetText("studentSessionStatus", "INACTIVE");
         setStudentVerificationStatus(
@@ -174,7 +175,12 @@ function renderStudentAttendanceSession(session) {
     sapSetText("studentSessionClassroom", session.classroom_code);
     sapSetText(
         "studentSessionRadius",
-        `${session.radius_meters} meters`
+        `${Number(session.radius_meters)} meters`
+    );
+    sapSetText(
+        "studentSessionRangeSummary",
+        session.radius_description ||
+            `Accuracy limit ${session.max_accuracy_meters} m`
     );
     sapSetText("studentSessionTeacher", session.teacher_name);
     sapSetText("studentSessionStatus", "ACTIVE");

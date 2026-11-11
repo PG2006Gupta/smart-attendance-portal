@@ -11,14 +11,43 @@ const loginSchema = z.object({
     password: z.string().min(1).max(128)
 });
 
+// A whole classroom can share one campus network address, so a limit per
+// address alone locks out honest users behind the eleventh login. Failed
+// attempts are counted per address, and per account, and successful logins
+// are not counted at all. The address limit stays generous enough for a
+// class to sign in while still blunting password guessing.
 const loginLimiter = rateLimit({
     windowMs: 15 * 60 * 1000,
-    limit: 10,
+    limit: 60,
+    skipSuccessfulRequests: true,
     standardHeaders: true,
     legacyHeaders: false,
 
     message: {
-        error: "Too many login attempts. Please try again later."
+        error: "Too many failed login attempts. Please try again later."
+    }
+});
+
+// Counts failures against the account being targeted, so one shared network
+// address cannot be used to guess a single account's password.
+const accountLoginLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    limit: 10,
+    skipSuccessfulRequests: true,
+    standardHeaders: false,
+    legacyHeaders: false,
+
+    keyGenerator: (request) => {
+        const loginId = String(
+            request.body?.loginId || ""
+        ).trim().toUpperCase().slice(0, 50);
+
+        return loginId ? `account:${loginId}` : "account:unknown";
+    },
+
+    message: {
+        error:
+            "Too many failed login attempts for this account. Try again later."
     }
 });
 
@@ -56,7 +85,11 @@ function saveSession(request) {
     });
 }
 
-router.post("/login", loginLimiter, async (request, response, next) => {
+router.post(
+    "/login",
+    loginLimiter,
+    accountLoginLimiter,
+    async (request, response, next) => {
     try {
         const validation = loginSchema.safeParse(request.body);
 

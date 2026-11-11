@@ -55,6 +55,14 @@
                 <div class="teacher-stat-icon orange-stat">!</div>
                 <div><span>Locked Students</span><h2 id="adminLockedStudents">0</h2><small>No open registration window</small></div>
             </div>
+            <div class="teacher-stat-card">
+                <div class="teacher-stat-icon green-stat">📍</div>
+                <div><span>Ready Classrooms</span><h2 id="adminReadyClassrooms">0</h2><small>Verified attendance range</small></div>
+            </div>
+            <div class="teacher-stat-card">
+                <div class="teacher-stat-icon orange-stat">◌</div>
+                <div><span>Unconfigured Classrooms</span><h2 id="adminUnconfiguredClassrooms">0</h2><small>Attendance blocked</small></div>
+            </div>
         </section>
 
         <section class="teacher-card admin-directory-card">
@@ -65,12 +73,34 @@
             <form class="admin-search-row" onsubmit="searchAdminStudents(); return false;">
                 <label for="adminStudentSearch">Student name or ID</label>
                 <div class="admin-search-controls">
-                    <input id="adminStudentSearch" type="search" maxlength="100" placeholder="For example, CU123456" autocomplete="off">
+                    <input id="adminStudentSearch" type="search" maxlength="100" placeholder="For example, CU230101 or Student 4" autocomplete="off">
                     <button type="submit" class="teacher-records-button">Search</button>
                 </div>
             </form>
             <div id="adminStudentResults" class="admin-student-results" aria-live="polite">
                 <p class="sap-empty-state">Search for a student to begin.</p>
+            </div>
+        </section>
+
+        <section class="teacher-card admin-ranges-card">
+            <div class="teacher-card-heading">
+                <div><h2>Attendance Ranges</h2><p>Set each classroom's GPS centre, the radius students must be inside, and how accurate a location reading must be.</p></div>
+                <span class="today-label">ATTENDANCE VERIFICATION</span>
+            </div>
+
+            <div class="admin-range-history" id="adminRangeStats" hidden></div>
+
+            <div class="admin-ranges-grid">
+                <div class="admin-range-list" id="adminRangeList" aria-live="polite">
+                    <p class="sap-empty-state">Loading classrooms...</p>
+                </div>
+
+                <div id="adminRangeEditor" class="admin-range-editor">
+                    <div class="admin-range-empty">
+                        <strong>Select a classroom</strong>
+                        <span>Choose a classroom on the left to review or change its attendance range.</span>
+                    </div>
+                </div>
             </div>
         </section>
 

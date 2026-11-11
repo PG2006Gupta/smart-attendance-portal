@@ -101,11 +101,10 @@ The system aims to reduce proxy attendance through multiple verification layers:
 
 1. Teacher logs into the teacher portal.
 2. Selects the subject.
-3. Enters or selects the classroom number.
-4. The system uses the classroom-specific verification range.
-5. Teacher starts the attendance session.
-6. Student submissions are checked against the required conditions.
-7. Attendance records are maintained for management and monitoring.
+3. Selects the classroom. The portal shows that classroom's radius, accuracy limit, and whether its coordinates are verified.
+4. Teacher starts the attendance session. Sessions run for 10 minutes.
+5. Student submissions are checked against the classroom's range, their device signature, and the session window.
+6. Attendance records are maintained for management and monitoring.
 
 ## 🏗️ System Architecture
 
@@ -141,13 +140,136 @@ The architecture is designed around the following technologies and capabilities:
 |---|---|
 | HTML5 | Frontend structure |
 | CSS3 | Responsive user interface |
-| JavaScript | Frontend interactions |
-| Backend Framework | Server-side processing |
-| Database | Student, teacher and attendance records |
-| Geolocation API | Device location verification |
-| Authentication | Secure account access |
+| JavaScript (ES modules) | Frontend interactions and Web Crypto device signing |
+| Node.js + Express 5 | Server-side API and page serving |
+| PostgreSQL | Student, teacher, classroom, and attendance records |
+| `pg` | Database access and connection pooling |
+| `express-session` + `connect-pg-simple` | Server-side sessions stored in PostgreSQL |
+| Argon2id (`argon2`) | Password hashing |
+| WebAuthn (`@simplewebauthn/server`) | Optional passkey sign-in |
+| Geolocation API + Haversine | Device location verification against the classroom range |
+| Helmet, CORS, `express-rate-limit` | Security headers, origin allowlist, and rate limiting |
+| `zod` | Request validation |
 
-*Update the technology table to match the exact backend framework and database used in your deployed version.*
+## 🚦 Running the Project
+
+### 1. Prerequisites
+
+- Node.js 20 or newer
+- PostgreSQL 14 or newer
+- A browser with the Geolocation API (location checks need HTTPS or `localhost`)
+
+### 2. Create the database
+
+```bash
+createdb -U postgres sap
+```
+
+### 3. Configure the environment
+
+```bash
+cp .env.example .env
+```
+
+Fill in `DB_*` for your PostgreSQL server and generate a session secret:
+
+```bash
+node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"
+```
+
+Set `SEED_STUDENT_PASSWORD`, `SEED_TEACHER_PASSWORD`, and `SEED_ADMIN_PASSWORD` too. Each needs at least 12 characters, and they must all differ. Every variable is documented inside `.env.example`.
+
+### 4. Create the schema and demo accounts
+
+```bash
+npm install
+npm run db:setup
+```
+
+`db:setup` applies every migration in order, creates the demo cohort, then the administrator. It is safe to repeat.
+
+Demo accounts it creates:
+
+| Role | Name | Login ID | Password |
+|---|---|---|---|
+| Student | Student 1 | `CU230101` | `SEED_STUDENT_PASSWORD` |
+| Student | Student 2 | `CU230102` | `SEED_STUDENT_PASSWORD` |
+| Student | Student 3 | `CU230103` | `SEED_STUDENT_PASSWORD` |
+| Student | Student 4 | `CU230104` | `SEED_STUDENT_PASSWORD` |
+| Student | Student 5 | `CU230105` | `SEED_STUDENT_PASSWORD` |
+| Student | Student 6 | `CU230106` | `SEED_STUDENT_PASSWORD` |
+| Student | Student 7 | `CU230107` | `SEED_STUDENT_PASSWORD` |
+| Student | Student 8 | `CU230108` | `SEED_STUDENT_PASSWORD` |
+| Student | Student 9 | `CU230109` | `SEED_STUDENT_PASSWORD` |
+| Student | Student 10 | `CU230110` | `SEED_STUDENT_PASSWORD` |
+| Teacher | Teacher 1 | `TCH2001` | `SEED_TEACHER_PASSWORD` |
+| Teacher | Teacher 2 | `TCH2002` | `SEED_TEACHER_PASSWORD` |
+| Teacher | Teacher 3 | `TCH2003` | `SEED_TEACHER_PASSWORD` |
+| Teacher | Teacher 4 | `TCH2004` | `SEED_TEACHER_PASSWORD` |
+| Administrator | SAP Administrator | `ADM1001` | `SEED_ADMIN_PASSWORD` |
+
+All students share `SEED_STUDENT_PASSWORD` and all teachers share `SEED_TEACHER_PASSWORD`, so a demo needs three passwords rather than fifteen.
+
+### Demo teaching structure
+
+Every teacher teaches **two subjects** to their **own group of students** in section 311/B.
+
+| Teacher | Subjects | Students | Count |
+|---|---|---|---|
+| Teacher 1 | DBMS, JAVA | Students 1-4 | 4 |
+| Teacher 2 | COA, DSA | Students 5-7 | 3 |
+| Teacher 3 | DBMS, MATH | Students 8-9 | 2 |
+| Teacher 4 | DSA, MATH | Student 10 | 1 |
+
+Each student therefore takes two subjects, both taught by their own teacher. The groups are uneven (4 + 3 + 2 + 1 = 10) so class sizes of 4, 3, 2, and 1 can all be demonstrated. DBMS, DSA, and MATH are each taught by two different teachers, which is allowed because a class offering is unique per subject, section, and teacher.
+
+The cohort is defined in `database/demo-cohort.js`. Accounts are created by `npm run seed-users` because passwords are Argon2id hashes, which SQL cannot produce. The teaching structure lives in SQL:
+
+- `013_seed_demo_cohort.sql` removes the earlier `CU123456` and `TCH1001` demo accounts and everything that depended on them.
+- `014_regroup_demo_teaching.sql` builds the current timetable and student groups above.
+
+### 5. Start the portal
+
+```bash
+npm run dev
+```
+
+Open `http://localhost:5000`.
+
+### Database commands
+
+| Command | What it does |
+|---|---|
+| `npm run db:setup` | First-time setup: schema, demo accounts, and seed data |
+| `npm run migrate` | Apply only the migrations that are still pending |
+| `npm run db:status` | Show which migrations are applied and which are pending |
+| `npm run seed-users` | Recreate the demo student and teacher |
+| `npm run seed-admin` | Recreate the administrator |
+
+Migrate options:
+
+```bash
+npm run migrate -- --status        # same as npm run db:status
+npm run migrate -- --through=008   # stop after a given migration
+npm run migrate -- --baseline      # record an existing schema without running it
+```
+
+Use `--baseline` once on a database that was created manually before the migration runner existed. It records every migration file as applied so the runner can take over. The runner stores its history in the `schema_migrations` table, wraps each migration in a transaction, and warns when a migration file changes after it was applied.
+
+### Attendance ranges
+
+Every classroom needs a verified GPS centre before students can mark attendance. Until then the student page reports that the classroom is not configured and the backend rejects submissions with `classroom_not_configured`.
+
+An administrator configures it on the admin dashboard, under **Attendance Ranges**:
+
+1. Select a classroom.
+2. Enter its latitude and longitude, or use **Use my current location** while standing in the classroom.
+3. Set the attendance radius (1–500 m) and the accuracy limit (1–500 m). A reading less accurate than the limit is rejected before distance is judged.
+4. Enter a reason and choose **Save & Verify**.
+
+The coordinates must be verified in the same save, because an unverified classroom keeps attendance blocked. **Revoke Verification** blocks attendance again without deleting the coordinates, which is useful when a room is temporarily reassigned.
+
+Every change is recorded with the administrator, reason, previous values, and new values. A classroom's range cannot be changed while an attendance session is using it, so the rule students are being measured against cannot shift mid-session.
 
 ## 🔒 Security & Verification Approach
 
@@ -158,9 +280,11 @@ SAP focuses on reducing attendance manipulation through multiple verification la
 | Student Authentication | Verify student identity |
 | Teacher Authentication | Restrict attendance session creation |
 | Device Restriction | Reduce account sharing |
+| Device Signature | Prove the registered device made the request |
 | Location Verification | Check classroom presence |
 | Session Time Limit | Prevent late submissions |
 | Classroom-Specific Range | Apply different verification boundaries to classrooms |
+| Verified Coordinates | Block attendance in classrooms whose range is not approved |
 
 **Important:** Location verification is designed as an additional presence check, not as absolute proof of physical presence. Actual implementation may require additional safeguards against GPS spoofing and device manipulation.
 

@@ -17,6 +17,29 @@ const resetSchema = z.object({
     reason: reasonSchema
 });
 
+// Attendance range limits match the classrooms table constraints from
+// migration 004. The database remains the final authority.
+const MAX_RADIUS_METERS = 500;
+const MAX_ACCURACY_LIMIT_METERS = 500;
+
+const classroomRangeSchema = z.object({
+    latitude: z.number().finite().min(-90).max(90),
+    longitude: z.number().finite().min(-180).max(180),
+    radiusMeters: z.coerce.number().finite().positive().max(MAX_RADIUS_METERS),
+    maxAccuracyMeters: z.coerce
+        .number()
+        .finite()
+        .positive()
+        .max(MAX_ACCURACY_LIMIT_METERS),
+    coordinatesVerified: z.boolean(),
+    reason: reasonSchema
+});
+
+const classroomVerificationSchema = z.object({
+    action: z.enum(["verify", "revoke"]),
+    reason: reasonSchema
+});
+
 function parseId(value) {
     const id = Number(value);
     return Number.isInteger(id) && id > 0 ? id : null;
@@ -73,6 +96,146 @@ async function recordAction(
     );
 }
 
+
+// =====================================================
+// ATTENDANCE RANGE HELPERS
+// =====================================================
+
+async function getClassroom(client, classroomId, lock = false) {
+    const result = await client.query(
+        `
+        SELECT
+            classrooms.id AS classroom_id,
+            classrooms.code,
+            classrooms.building,
+            classrooms.latitude,
+            classrooms.longitude,
+            classrooms.radius_meters,
+            classrooms.max_accuracy_meters,
+            classrooms.coordinates_verified,
+            classrooms.is_active,
+            classrooms.range_updated_at,
+            users.login_id AS range_updated_by_login_id,
+            (
+                SELECT COUNT(*)
+                FROM attendance_sessions
+                WHERE
+                    attendance_sessions.classroom_id = classrooms.id
+                    AND attendance_sessions.status = 'active'
+                    AND attendance_sessions.expires_at > NOW()
+            )::integer AS active_sessions,
+            (
+                SELECT COUNT(*)
+                FROM attendance_sessions
+                WHERE attendance_sessions.classroom_id = classrooms.id
+            )::integer AS total_sessions
+        FROM classrooms
+        LEFT JOIN users ON users.id = classrooms.range_updated_by
+        WHERE classrooms.id = $1
+        ${lock ? "FOR UPDATE OF classrooms" : ""}
+        `,
+        [classroomId]
+    );
+
+    return result.rows[0] || null;
+}
+
+function presentClassroom(classroom) {
+    if (!classroom) return null;
+
+    return {
+        ...classroom,
+        latitude: classroom.latitude === null
+            ? null
+            : Number(classroom.latitude),
+        longitude: classroom.longitude === null
+            ? null
+            : Number(classroom.longitude),
+        radius_meters: Number(classroom.radius_meters),
+        max_accuracy_meters: Number(classroom.max_accuracy_meters)
+    };
+}
+
+function classroomRangeValues(classroom) {
+    return {
+        latitude: classroom.latitude === null
+            ? null
+            : Number(classroom.latitude),
+        longitude: classroom.longitude === null
+            ? null
+            : Number(classroom.longitude),
+        radiusMeters: Number(classroom.radius_meters),
+        maxAccuracyMeters: Number(classroom.max_accuracy_meters),
+        coordinatesVerified: classroom.coordinates_verified
+    };
+}
+
+function describeRangeChanges(previous, next) {
+    const changes = [];
+
+    if (previous.latitude === null && next.latitude !== null) {
+        changes.push("coordinates set");
+    } else if (
+        previous.latitude !== null &&
+        (Math.abs(previous.latitude - next.latitude) > 0.0000005 ||
+            Math.abs(previous.longitude - next.longitude) > 0.0000005)
+    ) {
+        changes.push("coordinates updated");
+    }
+
+    if (previous.radiusMeters !== next.radiusMeters) {
+        changes.push(
+            `radius ${previous.radiusMeters} m to ${next.radiusMeters} m`
+        );
+    }
+
+    if (previous.maxAccuracyMeters !== next.maxAccuracyMeters) {
+        changes.push(
+            `accuracy limit ${previous.maxAccuracyMeters} m to ` +
+            `${next.maxAccuracyMeters} m`
+        );
+    }
+
+    if (previous.coordinatesVerified !== next.coordinatesVerified) {
+        changes.push(
+            next.coordinatesVerified
+                ? "coordinates verified"
+                : "verification revoked"
+        );
+    }
+
+    return changes.length > 0
+        ? changes.join("; ")
+        : "saved without changes";
+}
+
+async function recordClassroomAction(
+    client,
+    { adminId, classroomId, action, reason = null, previous, next }
+) {
+    await client.query(
+        `
+        INSERT INTO classroom_admin_actions (
+            admin_id,
+            classroom_id,
+            action,
+            reason,
+            previous_values,
+            new_values
+        )
+        VALUES ($1, $2, $3, $4, $5, $6)
+        `,
+        [
+            adminId,
+            classroomId,
+            action,
+            reason,
+            JSON.stringify(previous),
+            JSON.stringify(next)
+        ]
+    );
+}
+
 router.get("/overview", async (request, response, next) => {
     try {
         const [profileResult, statsResult] = await Promise.all([
@@ -109,7 +272,24 @@ router.get("/overview", async (request, response, next) => {
                             AND device_registration_opens_at <= NOW()
                             AND device_registration_expires_at > NOW()
                         )
-                    )::integer AS locked_students
+                    )::integer AS locked_students,
+                    (
+                        SELECT COUNT(*)
+                        FROM classrooms
+                        WHERE
+                            is_active = TRUE
+                            AND coordinates_verified = TRUE
+                            AND latitude IS NOT NULL
+                            AND longitude IS NOT NULL
+                    )::integer AS ready_classrooms,
+                    (
+                        SELECT COUNT(*)
+                        FROM classrooms
+                        WHERE
+                            coordinates_verified = FALSE
+                            OR latitude IS NULL
+                            OR longitude IS NULL
+                    )::integer AS unconfigured_classrooms
                 `
             )
         ]);
@@ -506,4 +686,406 @@ router.get(
     }
 );
 
+// =====================================================
+// ATTENDANCE RANGES
+// =====================================================
+
+async function loadAttendanceRangeOverview(client) {
+    // A single pooled client cannot run queries concurrently, so these run
+    // one after another.
+    const classrooms = await client.query(
+        `
+        SELECT
+            classrooms.id AS classroom_id,
+            classrooms.code,
+            classrooms.building,
+            classrooms.latitude,
+            classrooms.longitude,
+            classrooms.radius_meters,
+            classrooms.max_accuracy_meters,
+            classrooms.coordinates_verified,
+            classrooms.is_active,
+            classrooms.range_updated_at,
+            users.login_id AS range_updated_by_login_id,
+            (
+                SELECT COUNT(*)
+                FROM attendance_sessions
+                WHERE
+                    attendance_sessions.classroom_id = classrooms.id
+                    AND attendance_sessions.status = 'active'
+                    AND attendance_sessions.expires_at > NOW()
+            )::integer AS active_sessions
+        FROM classrooms
+        LEFT JOIN users ON users.id = classrooms.range_updated_by
+        ORDER BY classrooms.is_active DESC, classrooms.code
+        `
+    );
+
+    const stats = await client.query(
+        `
+        SELECT
+            (SELECT COUNT(*) FROM classrooms)::integer AS total_classrooms,
+            (
+                SELECT COUNT(*)
+                FROM classrooms
+                WHERE
+                    is_active = TRUE
+                    AND coordinates_verified = TRUE
+                    AND latitude IS NOT NULL
+                    AND longitude IS NOT NULL
+            )::integer AS ready_classrooms,
+            (
+                SELECT COUNT(*)
+                FROM classrooms
+                WHERE
+                    coordinates_verified = FALSE
+                    OR latitude IS NULL
+                    OR longitude IS NULL
+            )::integer AS unconfigured_classrooms,
+            (
+                SELECT COUNT(*)
+                FROM attendance_sessions
+                WHERE status = 'active' AND expires_at > NOW()
+            )::integer AS active_sessions
+        `
+    );
+
+    const checks = await client.query(
+        `
+        SELECT
+            (
+                SELECT COUNT(*)
+                FROM verification_attempts
+                WHERE
+                    created_at > NOW() - INTERVAL '24 hours'
+                    AND result = 'accepted'
+            )::integer AS accepted_24h,
+            (
+                SELECT COUNT(*)
+                FROM verification_attempts
+                WHERE
+                    created_at > NOW() - INTERVAL '24 hours'
+                    AND result = 'rejected'
+                    AND rejection_reason = 'outside_classroom'
+            )::integer AS outside_range_24h,
+            (
+                SELECT COUNT(*)
+                FROM verification_attempts
+                WHERE
+                    created_at > NOW() - INTERVAL '24 hours'
+                    AND result = 'rejected'
+                    AND rejection_reason = 'location_accuracy_too_low'
+            )::integer AS inaccurate_24h,
+            (
+                SELECT COUNT(*)
+                FROM verification_attempts
+                WHERE
+                    created_at > NOW() - INTERVAL '24 hours'
+                    AND result = 'rejected'
+                    AND rejection_reason = 'classroom_not_configured'
+            )::integer AS unconfigured_24h
+        `
+    );
+
+    return {
+        classrooms: classrooms.rows.map(presentClassroom),
+        stats: stats.rows[0],
+        checks: checks.rows[0]
+    };
+}
+
+router.get("/attendance-ranges", async (request, response, next) => {
+    const client = await pool.connect();
+
+    try {
+        response.json(await loadAttendanceRangeOverview(client));
+    } catch (error) {
+        next(error);
+    } finally {
+        client.release();
+    }
+});
+
+router.get(
+    "/classrooms/:classroomId/range-history",
+    async (request, response, next) => {
+        const classroomId = parseId(request.params.classroomId);
+
+        if (!classroomId) {
+            return response.status(400).json({
+                error: "Invalid classroom ID."
+            });
+        }
+
+        try {
+            const result = await pool.query(
+                `
+                SELECT
+                    classroom_admin_actions.id,
+                    classroom_admin_actions.action,
+                    classroom_admin_actions.reason,
+                    classroom_admin_actions.previous_values,
+                    classroom_admin_actions.new_values,
+                    classroom_admin_actions.created_at,
+                    users.login_id AS admin_login_id,
+                    administrators.full_name AS admin_name
+                FROM classroom_admin_actions
+                JOIN administrators
+                    ON administrators.user_id =
+                        classroom_admin_actions.admin_id
+                JOIN users ON users.id = classroom_admin_actions.admin_id
+                WHERE classroom_admin_actions.classroom_id = $1
+                ORDER BY
+                    classroom_admin_actions.created_at DESC,
+                    classroom_admin_actions.id DESC
+                LIMIT 50
+                `,
+                [classroomId]
+            );
+
+            response.json({ actions: result.rows });
+        } catch (error) {
+            next(error);
+        }
+    }
+);
+
+// Saves the range and, in the same step, the verification state. Turning
+// verification off is always allowed. Turning it on means an administrator
+// has reviewed the coordinates, so it is audited as a verification.
+router.put(
+    "/classrooms/:classroomId/range",
+    async (request, response, next) => {
+        const classroomId = parseId(request.params.classroomId);
+        const validation = classroomRangeSchema.safeParse(request.body);
+
+        if (!classroomId) {
+            return response.status(400).json({
+                error: "Invalid classroom ID."
+            });
+        }
+
+        if (!validation.success) {
+            return response.status(400).json({
+                error:
+                    "Provide coordinates within their valid ranges, a radius " +
+                    "of 1 to 500 metres, an accuracy limit of 1 to 500 " +
+                    "metres, a verification state, and a reason of 3 to 300 " +
+                    "characters."
+            });
+        }
+
+        const {
+            latitude,
+            longitude,
+            radiusMeters,
+            maxAccuracyMeters,
+            coordinatesVerified,
+            reason
+        } = validation.data;
+
+        const adminId = request.session.user.id;
+        const client = await pool.connect();
+
+        try {
+            await client.query("BEGIN");
+
+            const classroom = await getClassroom(client, classroomId, true);
+
+            if (!classroom) {
+                await client.query("ROLLBACK");
+                return response.status(404).json({
+                    error: "Classroom not found."
+                });
+            }
+
+            const previous = classroomRangeValues(classroom);
+            const next = {
+                latitude,
+                longitude,
+                radiusMeters,
+                maxAccuracyMeters,
+                coordinatesVerified
+            };
+            // The attendance check reads the classroom row while a session
+            // is running, so editing the range mid-session would silently
+            // change the rule that students are measured against.
+            if (Number(classroom.active_sessions) > 0) {
+                await client.query("ROLLBACK");
+                return response.status(409).json({
+                    error:
+                        "An attendance session is using this classroom. " +
+                        "Wait until it ends before changing its range or " +
+                        "verification.",
+                    code: "classroom_session_active"
+                });
+            }
+
+            await client.query(
+                `
+                UPDATE classrooms
+                SET
+                    latitude = $2,
+                    longitude = $3,
+                    radius_meters = $4,
+                    max_accuracy_meters = $5,
+                    coordinates_verified = $6,
+                    range_updated_at = NOW(),
+                    range_updated_by = $7,
+                    updated_at = NOW()
+                WHERE id = $1
+                `,
+                [
+                    classroomId,
+                    latitude,
+                    longitude,
+                    radiusMeters,
+                    maxAccuracyMeters,
+                    coordinatesVerified,
+                    adminId
+                ]
+            );
+
+            await recordClassroomAction(client, {
+                adminId,
+                classroomId,
+                action: next.coordinatesVerified
+                    ? "range_updated"
+                    : "verification_revoked",
+                reason,
+                previous,
+                next
+            });
+
+            const updated = await getClassroom(client, classroomId);
+
+            await client.query("COMMIT");
+
+            response.json({
+                message: coordinatesVerified
+                    ? "Attendance range saved and coordinates verified."
+                    : "Attendance range saved. Attendance stays blocked until the coordinates are verified.",
+                changes: describeRangeChanges(previous, next),
+                classroom: presentClassroom(updated)
+            });
+        } catch (error) {
+            await client.query("ROLLBACK");
+            next(error);
+        } finally {
+            client.release();
+        }
+    }
+);
+
+// Reviews the saved coordinates without changing them.
+router.post(
+    "/classrooms/:classroomId/verification",
+    async (request, response, next) => {
+        const classroomId = parseId(request.params.classroomId);
+        const validation = classroomVerificationSchema.safeParse(
+            request.body
+        );
+
+        if (!classroomId) {
+            return response.status(400).json({
+                error: "Invalid classroom ID."
+            });
+        }
+
+        if (!validation.success) {
+            return response.status(400).json({
+                error:
+                    "Provide verify or revoke and a reason of 3 to 300 " +
+                    "characters."
+            });
+        }
+
+        const { action, reason } = validation.data;
+        const adminId = request.session.user.id;
+        const client = await pool.connect();
+
+        try {
+            await client.query("BEGIN");
+
+            const classroom = await getClassroom(client, classroomId, true);
+
+            if (!classroom) {
+                await client.query("ROLLBACK");
+                return response.status(404).json({
+                    error: "Classroom not found."
+                });
+            }
+
+            const previous = classroomRangeValues(classroom);
+
+            if (Number(classroom.active_sessions) > 0) {
+                await client.query("ROLLBACK");
+                return response.status(409).json({
+                    error:
+                        "An attendance session is using this classroom. " +
+                        "Wait until it ends before changing its " +
+                        "verification.",
+                    code: "classroom_session_active"
+                });
+            }
+
+            if (previous.latitude === null || previous.longitude === null) {
+                await client.query("ROLLBACK");
+                return response.status(409).json({
+                    error:
+                        "Save the classroom coordinates before verifying " +
+                        "them.",
+                    code: "coordinates_missing"
+                });
+            }
+
+            const next = {
+                ...previous,
+                coordinatesVerified: action === "verify"
+            };
+
+            await client.query(
+                `
+                UPDATE classrooms
+                SET
+                    coordinates_verified = $2,
+                    range_updated_at = NOW(),
+                    range_updated_by = $3,
+                    updated_at = NOW()
+                WHERE id = $1
+                `,
+                [classroomId, next.coordinatesVerified, adminId]
+            );
+
+            await recordClassroomAction(client, {
+                adminId,
+                classroomId,
+                action: next.coordinatesVerified
+                    ? "coordinates_verified"
+                    : "verification_revoked",
+                reason,
+                previous,
+                next
+            });
+
+            const updated = await getClassroom(client, classroomId);
+
+            await client.query("COMMIT");
+
+            response.json({
+                message: next.coordinatesVerified
+                    ? "Coordinates verified. Students can now be checked against this classroom."
+                    : "Verification revoked. Attendance is blocked for this classroom.",
+                classroom: presentClassroom(updated)
+            });
+        } catch (error) {
+            await client.query("ROLLBACK");
+            next(error);
+        } finally {
+            client.release();
+        }
+    }
+);
+
 export default router;
+
