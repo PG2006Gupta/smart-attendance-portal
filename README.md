@@ -258,6 +258,7 @@ Open `http://localhost:5000`.
 | Command | What it does |
 |---|---|
 | `npm run db:env -- "<url>"` | Write `.env` from one connection string |
+| `npm run db:check` | Test the connection and diagnose a bad value |
 | `npm run db:setup` | First-time setup: schema, demo accounts, and seed data |
 | `npm run migrate` | Apply only the migrations that are still pending |
 | `npm run db:status` | Show which migrations are applied and which are pending |
