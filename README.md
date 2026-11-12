@@ -167,6 +167,23 @@ createdb -U postgres sap
 
 ### 3. Configure the environment
 
+If you have a single PostgreSQL connection string (Neon, Supabase, Render,
+Railway, or a managed database), let the setup script write `.env` for you:
+
+```bash
+npm run db:env -- "postgresql://user:password@host:5432/dbname?sslmode=require"
+```
+
+On Windows PowerShell, quoting a long string with `@`, `?`, and `&` inside it
+is easy to get wrong. Save it to `connection-string.txt` instead and run
+`npm run db:env` with no argument. That file is in `.gitignore`.
+
+The script also rejects a pooled connection string (`-pooler` in the host).
+Migrations run inside transactions and depend on connection state, so the
+direct endpoint is the correct one for both `db:setup` and the running app.
+
+To configure by hand instead:
+
 ```bash
 cp .env.example .env
 ```
@@ -240,6 +257,7 @@ Open `http://localhost:5000`.
 
 | Command | What it does |
 |---|---|
+| `npm run db:env -- "<url>"` | Write `.env` from one connection string |
 | `npm run db:setup` | First-time setup: schema, demo accounts, and seed data |
 | `npm run migrate` | Apply only the migrations that are still pending |
 | `npm run db:status` | Show which migrations are applied and which are pending |

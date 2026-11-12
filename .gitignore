@@ -6,6 +6,9 @@ node_modules/
 .env.*
 !.env.example
 
+# Connection strings pasted by hand for `npm run db:env`
+connection-string.txt
+
 # Logs
 *.log
 npm-debug.log*
